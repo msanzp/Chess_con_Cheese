@@ -1,1 +1,2 @@
-void SplashScreen(); // Funcion que muestra el splash screen y espera a que el usuario pulse una tecla para continuar
+void SplashScreen(); // Funcion que crea la ventana de juego y muestra el splash screen
+                     // espera a que el usuario pulse una tecla para continuar

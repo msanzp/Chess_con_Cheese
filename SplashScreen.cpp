@@ -2,5 +2,6 @@
 
 void SplashScreen()
 {
- // Splash Screen que espera a que el usuario pulse una tecla para continuar
+    // Función que crea la ventana de juego
+    // Función que muestra Splash Screen y espera a que el usuario pulse una tecla para continuar
 }

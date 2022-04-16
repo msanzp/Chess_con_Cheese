@@ -23,7 +23,7 @@ void main()
     tablero.GameStart(EleccionJuego, EleccionColor); // Inicializa el juego 
     tablero.Imprimir(); // Pone el tablero en pantalla
 
-    while (tablero.CompruebaStatus() == "en juego") // Mientras el juego no termine
+    while (tablero.CompruebaStatus() == "En Juego") // Mientras el juego no termine
     {
         tablero.Jugada(); 
         tablero.Imprimir();

@@ -32,7 +32,7 @@ string ObtieneJugada() // Función que obtiene la jugada del jugador
 // Utiliza la variable "Roque" para saber si se puede hacer roque
 // Utiliza la variable "EnPassant" para saber si se puede hacer en passant
 
-// Dentro de esta función se creará otra para la obtención de la jugada del API,
+// Dentro de esta función se usará otra para la obtención de la jugada del API,
 // implementando la librería de conversion a FEN y la de interacción con el API
 } 
 
@@ -40,8 +40,14 @@ void Tablero::Jugada() // Función que recibe la jugada, comprueba si es valida 
 {
 string Movimiento = ObtieneJugada();
 // Ejecuta movimiento en la matriz de juego 
-//(mueve pieza a la casilla final y pone 0 en la casilla inicial o mueve rey y torre para posicion de roque o mueve peon para posicion de en passant y come el anterior)
+// Comprueba tipo de jugada (roque, en passant, normal)
+// (para roque, movimiento de rey blanco e1c1 o e1f1, movimiento de rey negro e8c8 o e8f8) (para en passant movimiento de peón en diagonal hacia EnPassant)
+// Si es un roque mueve rey y torre para posicion de roque
+// Si es una jugada normal mueve pieza a la casilla final y pone 0 en la casilla inicial 
+// Si es En Passant mueve peon para posicion de en passant y come el peon que está detrás (solo se hace en passant en las filas de E y C)
 
-// al terminar la jugada, se actualiza las variables de juego
+// Actualiza la variable "QuienJuega" (Cambia de "w" a "b" o viceversa)
+// Actualiza la variable "Roque" si se han cambiado las condiciones (movimiento de rey o torre, o si se ha hecho roque) (Atención, una jugada que impida el roque temporariamente no debe alterar esta variable)
+// Actualiza la variable "EnPassant" (si hubo movimiento de dos casillas de otro peon hay nuevo valor, si no vuelve a "")
 
 }
