@@ -5,22 +5,24 @@ class Tablero
 {
 private:
         string TableroJuego[8][8] = {
-            {"r", "n", "b", "q", "k", "b", "n", "r"}, //  initializers for row indexed by 0 -- linea 8 del tablero
-            {"p", "p", "p", "p", "p", "p", "p", "p"}, //  initializers for row indexed by 1  -- linea 7 del tablero
-            {"0", "0", "0", "0", "0", "0", "0", "0"}, //  initializers for row indexed by 2  -- linea 6 del tablero
-            {"0", "0", "0", "0", "0", "0", "0", "0"}, //  initializers for row indexed by 3  -- linea 5 del tablero
-            {"0", "0", "0", "0", "0", "0", "0", "0"}, //  initializers for row indexed by 4  -- linea 4 del tablero
-            {"0", "0", "0", "0", "0", "0", "0", "0"}, //  initializers for row indexed by 5  -- linea 3 del tablero
-            {"P", "P", "P", "P", "P", "P", "P", "P"}, //  initializers for row indexed by 6  -- linea 2 del tablero
-            {"R", "N", "B", "Q", "K", "B", "N", "R"}  //  initializers for row indexed by 7  -- linea 1 del tablero
-        };                                            // Tablero de juego
+            {"r", "n", "b", "q", "k", "b", "n", "r"}, //  linea 8 del tablero
+            {"p", "p", "p", "p", "p", "p", "p", "p"},
+            {"0", "0", "0", "0", "0", "0", "0", "0"}, 
+            {"0", "0", "0", "0", "0", "0", "0", "0"}, 
+            {"0", "0", "0", "0", "0", "0", "0", "0"}, 
+            {"0", "0", "0", "0", "0", "0", "0", "0"}, 
+            {"P", "P", "P", "P", "P", "P", "P", "P"}, 
+            {"R", "N", "B", "Q", "K", "B", "N", "R"}  //  linea 1 del tablero
+        };                                            // Tablero de juego inicial {Blancas en Mayusculas, Negras en minusculas}
 
-        string Status;                                // Estatus del juego
-        string QuienJuega = "w";                     // Quien juega
-        string Jugador = "w";                        // Jugador por defecto juega las blancas
-        string TipoJuego; // Tipo de juego, contra jugador o contra máquina
-        string Roque  = "KQkq"; // Posibles posiciones de roque
-        string EnPassant = ""; // Posibles posiciones de en passant
+        string QuienJuega = "w";                     // Quien juega la siguiente jugada {"w", "b"}
+        string Jugador = "w";                        // Que lado juega el Jugador, por defecto juega las blancas {"w", "b"}
+        string TipoJuego; // Tipo de juego, contra jugador o contra máquina {"Dos Jugadores", "Maquina"}
+        string Roque  = "KQkq"; // Opcioned de roque disponibles {"KQkq", "KQk", "KQq", "KQ", "Kkq", "Kk", "Kq", "K", "Qkq", "Qk", "Qq", "Q", "kq", "k", "q", "-"}
+        string EnPassant = ""; // Posible posicion de en passant (ejemplo: "e4")
+        int HalfMoves = 0; // Contador de medios movimientos
+        int FullMoves = 0; // Contador de movimientos completos
+        string ObtieneJugada(); // Función que obtiene la jugada del jugador
 
 public:
         void Tablero::GameStart(string EleccionJuego, string EleccionColor); // Función que inicia el juego

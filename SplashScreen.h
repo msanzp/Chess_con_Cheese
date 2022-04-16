@@ -1,1 +1,1 @@
-void SplashScreen(); 
+void SplashScreen(); // Funcion que muestra el splash screen y espera a que el usuario pulse una tecla para continuar

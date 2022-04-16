@@ -1,9 +1,10 @@
 #include "Tablero.h"
 
-void Tablero::GameStart(string eleccionJuego, string eleccionColor) // Funcion que inicia el juego
-{ 
-// Inicializa el tablero con los jugadores en las posiciones, define los contadores de juego
-
+void Tablero::GameStart(string EleccionJuego, string EleccionColor) // Funcion que inicia el juego
+{
+    TipoJuego = EleccionJuego;
+    if (TipoJuego != "Dos Jugadores")
+        Jugador = EleccionColor;
 }
 
 void Tablero::Imprimir() // Función que pone el tablero en pantalla
@@ -16,18 +17,31 @@ void Tablero::Imprimir() // Función que pone el tablero en pantalla
 string Tablero::CompruebaStatus() // Función que comprueba el estatus del juego, si está en juego o finalizado
 {
 // Comprueba el estatus del juego:
-// Si está en juego, devuelve "en juego"
-// Si está finalizado, devuelve el ganador o empate
-// Debe devolver una string para poder ser comparada
+// Devuelve uno de estos valores {"En Juego", "Blancas Ganan", "Negras Ganan", "Empate"}
 }
 
-void Tablero::Jugada() // Función que realiza la jugada
+string ObtieneJugada() // Función que obtiene la jugada del jugador
 {
-// Recibe la jugada del jugador mediante interfaz gráfica
+// Muestra mensaje pidiendo jugada
+// Recibe la jugada del jugador (en formato válido)
 // Comprueba si la jugada es válida
-// Si es válida, realiza el movimiento
-// Si no es válida, muestra un mensaje de error
+// Si no es válida, muestra un mensaje de error y vuelve a pedir
+// Ejemplo de respuesta: "e4e5"
+
 // Utiliza la variable "QuienJuega" para saber quien juega
 // Utiliza la variable "Roque" para saber si se puede hacer roque
 // Utiliza la variable "EnPassant" para saber si se puede hacer en passant
+
+// Dentro de esta función se creará otra para la obtención de la jugada del API,
+// implementando la librería de conversion a FEN y la de interacción con el API
+} 
+
+void Tablero::Jugada() // Función que recibe la jugada, comprueba si es valida y realiza la jugada
+{
+string Movimiento = ObtieneJugada();
+// Ejecuta movimiento en la matriz de juego 
+//(mueve pieza a la casilla final y pone 0 en la casilla inicial o mueve rey y torre para posicion de roque o mueve peon para posicion de en passant y come el anterior)
+
+// al terminar la jugada, se actualiza las variables de juego
+
 }
