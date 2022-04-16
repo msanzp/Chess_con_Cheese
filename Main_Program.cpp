@@ -20,7 +20,7 @@ void main()
         EleccionColor = "Dos Jugadores"; // Si el tipo de juego es contra jugador, no se necesita seleccionar color
     }
     
-    tablero.Jugar(EleccionJuego, EleccionColor); // Juego
+    tablero.GameStart(EleccionJuego, EleccionColor); // Inicializa el juego 
     tablero.Imprimir(); // Pone el tablero en pantalla
 
     while (tablero.CompruebaStatus() == "en juego") // Mientras el juego no termine
