@@ -1,0 +1,6 @@
+﻿  Tablero.cpp
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Informática Industrial\src\Tablero.cpp(115,16): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Informática Industrial\src\Tablero.cpp(116,16): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Informática Industrial\src\Tablero.cpp(117,19): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Informática Industrial\src\Tablero.cpp(118,20): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+  Pang.vcxproj -> C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Informática Industrial\bin\Ajedrez.exe
