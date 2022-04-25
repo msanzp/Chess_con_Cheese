@@ -1,7 +1,4 @@
 #include "Tablero.h"
-#include "freeglut.h"
-#include <math.h>
-#include <iostream>
 
 using namespace std;
 
@@ -108,15 +105,44 @@ void Tablero::dibuja()
 	//aqui es donde hay que poner el codigo de dibujo
 	//dibujo del tablero
 	glDisable(GL_LIGHTING);
-	glBegin(GL_LINES);
-	glColor3ub(255, 255, 255);
-	for (int i = 0; i < 9; i++)
+	glBegin(GL_POLYGON);
+	for (int j = 0; j < 8; j++)
 	{
-		glVertex3f(i * 4, 0, 0);
-		glVertex3f(i * 4, 32, 0);
-		glVertex3f(0, i * 4, 0);
-		glVertex3f(32, i * 4, 0);
+		for (int i = 0; i < 8; i++) {
+			if (j % 2 == 1) {//Bucle para las coordenadas y
+				if (i % 2 == 1)//Bucle para las coordenadas x
+					glColor3ub(0, 0, 0);
+				else glColor3ub(255, 255, 255);
+			}
+			else {
+				if (i % 2 == 0)
+					glColor3ub(0, 0, 0);
+				else glColor3ub(255, 255, 255);
+			}
+			glVertex3f(i * 4, j * 4, 0);//Definición de los vértices de cada casilla
+			glVertex3f(i * 4, (j + 1) * 4, 0);
+			glVertex3f((i + 1) * 4, (j + 1) * 4, 0);
+			glVertex3f((i + 1) * 4, j * 4, 0);
+		}
 	}
+	glEnd();
+	/*glBegin(GL_LINES);
+	glColor3ub(255, 255, 255);
+	glVertex3f(0, 0, 1);//Definición de un cuadrado que enmarca todo el tablero
+	glVertex3f(0, 32, 1);
+	glVertex3f(0, 32, 1);
+	glVertex3f(32, 32, 1);
+	glVertex3f(32, 32, 1);
+	glVertex3f(32, 0, 1);
+	glVertex3f(32, 0, 1);
+	glVertex3f(0, 0, 1);
+	glEnd();*/
+	glBegin(GL_POLYGON);//Dejo ambos contornos porque son ligeramente diferentes, escoged el que mas os guste
+	glColor3ub(255, 255, 255);
+	glVertex3f(-0.5, -0.5, -1);
+	glVertex3f(-0.5, 32.5, -1);
+	glVertex3f(32.5, 32.5, -1);
+	glVertex3f(32.5, -0.5, -1);
 	glEnd();
 	glEnable(GL_LIGHTING);
 	piezas.dibuja();

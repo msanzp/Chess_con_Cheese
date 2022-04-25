@@ -15,3 +15,6 @@ int Pieza::getX() {
 int Pieza::getY() {
 	return posY;
 }
+char Pieza::getColor() {
+	return color;
+}

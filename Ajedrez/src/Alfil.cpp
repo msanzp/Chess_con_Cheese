@@ -1,6 +1,5 @@
-#include "freeglut.h"
 #include "Alfil.h"
-#include <math.h>
+
 
 Alfil::Alfil(int x, int y, char c) {
 	color = c;

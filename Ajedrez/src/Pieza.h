@@ -10,4 +10,5 @@ public:
 	void setY(int y);
 	int getX();
 	int getY();
+	char getColor();
 };
