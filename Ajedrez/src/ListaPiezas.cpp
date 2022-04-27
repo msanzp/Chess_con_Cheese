@@ -160,9 +160,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 		}
 		for (int i = 0; i < numeropeones; i++) {
 			if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
-				movimiento_valido = peones[i]->comprobar_movimiento(destino_x, destino_y); // la forma de moverse de la pieza es la adecuada
-				// si la forma de moverse es la adecuada, comprobamos que no hay piezas en medio durante el recorrido
-				if (movimiento_valido == true) {
+				int y1;//Variable a introducir en la matriz posiciones
+				if (peones[i]->getColor()=='w') {
+					y1 = origen_y + 1;
+				}
+				else y1 = origen_y - 1;
+
+				if (origen_x==destino_x) {//Si esta en la misma coordenada x el peon se desplaza
+					if (posiciones[origen_x][y1].presencia == false)//Solo se ejecutara el movimiento si no tiene una pieza delante
+						movimiento_valido = peones[i]->comprobar_movimiento(destino_x, destino_y); // Comprueba el movimineto horizontal
+				}
+				else if (fabs(origen_x - destino_x) == 1) {//Si esta en distinta x el peon come
 
 				}
 			}
@@ -174,60 +182,62 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 // esta función sirve para determinar si hay piezas o no en medio de la trayectoria, devuelve false si la trayectoria esta libre
 bool ListaPiezas::comprobar_trayectoria(int origen_x, int origen_y, int destino_x, int destino_y) {
 	bool trayectoria_ocupada = false;
-	if (origen_x == destino_x) // se trata de un movimiento horizontal
-	{
-		if (destino_y > origen_y) {
-			for (int i = origen_y + 1; i < destino_y; i++)
-				if (trayectoria_ocupada==false)
-					trayectoria_ocupada = comprobar_posicion(origen_x,i);
-
-		}
-		if (origen_y > destino_y) {
-			for (int i = destino_y + 1; i < origen_y; i++)
-				if (trayectoria_ocupada == false)
-					trayectoria_ocupada = comprobar_posicion(origen_x, i);
-		}
-	}
-	if (origen_y == destino_y) // se trata de un movimiento vertical
-	{
-		if (destino_x > origen_x) {
-			for (int i = origen_x + 1; i < destino_x; i++)
-				if (trayectoria_ocupada == false)
-					trayectoria_ocupada = comprobar_posicion(i, origen_y);
-		}
-		if (origen_x > destino_x) {
-			for (int i = destino_x + 1; i < origen_x; i++)
-				if (trayectoria_ocupada == false)
-					trayectoria_ocupada = comprobar_posicion(i, origen_y);
-		}
-	}
-	if ((origen_x != destino_x) && (origen_y != destino_y)) // se trata de un movimiento diagonal
-	{
-		int diferencia = fabs(origen_x - destino_x);;
-		if ((origen_x < destino_x)&& (origen_y < destino_y)) {
-			for (int i = 1; i < diferencia; i++)
-				if (trayectoria_ocupada == false)
-					trayectoria_ocupada = comprobar_posicion(origen_x + i, origen_y + i);
-		}
-		if ((origen_x < destino_x) && (origen_y > destino_y)) {
-			for (int i = 1; i < diferencia; i++)
-				if (trayectoria_ocupada == false)
-					trayectoria_ocupada = comprobar_posicion(origen_x + i, origen_y - i);
-		}
-		if ((origen_x > destino_x) && (origen_y > destino_y)) {
-			for (int i = 1; i < diferencia; i++)
-				if (trayectoria_ocupada == false)
-					trayectoria_ocupada = comprobar_posicion(origen_x - i, origen_y - i);
-		}
-		if ((origen_x > destino_x) && (origen_y < destino_y)) {
-			for (int i = 1; i < diferencia; i++)
-				if (trayectoria_ocupada == false)
-					trayectoria_ocupada = comprobar_posicion(origen_x - i, origen_y + i);
-		}
-	}
 	//Se tiene que comprobar si la posicion de destino, si esta ocupada por una misma pieza del mismo color el movimiento no es posible
 	if (posiciones[destino_x][destino_y].color == posiciones[origen_x][origen_y].color)
 		trayectoria_ocupada = true;
+	else {
+		if (origen_x == destino_x) // se trata de un movimiento horizontal
+		{
+			if (destino_y > origen_y) {
+				for (int i = origen_y + 1; i < destino_y; i++) {
+					if ((trayectoria_ocupada == false) || (i == fabs(destino_y - origen_y)))
+						trayectoria_ocupada = comprobar_posicion(origen_x, i);
+				}
+			}
+			if (origen_y > destino_y) {
+				for (int i = destino_y + 1; i < origen_y; i++)
+					if ((trayectoria_ocupada == false) || (i == fabs(destino_y - origen_y)))
+						trayectoria_ocupada = comprobar_posicion(origen_x, i);
+			}
+		}
+		if (origen_y == destino_y) // se trata de un movimiento vertical
+		{
+			if (destino_x > origen_x) {
+				for (int i = origen_x + 1; i < destino_x; i++)
+					if ((trayectoria_ocupada == false) || (i == fabs(destino_x - origen_x)))
+						trayectoria_ocupada = comprobar_posicion(i, origen_y);
+			}
+			if (origen_x > destino_x) {
+				for (int i = destino_x + 1; i < origen_x; i++)
+					if ((trayectoria_ocupada == false) || (i == fabs(destino_x - origen_x)))
+						trayectoria_ocupada = comprobar_posicion(i, origen_y);
+			}
+		}
+		if ((origen_x != destino_x) && (origen_y != destino_y)) // se trata de un movimiento diagonal
+		{
+			int diferencia = fabs(origen_x - destino_x);
+			if ((origen_x < destino_x) && (origen_y < destino_y)) {
+				for (int i = 1; i < diferencia; i++)
+					if (trayectoria_ocupada == false)
+						trayectoria_ocupada = comprobar_posicion(origen_x + i, origen_y + i);
+			}
+			if ((origen_x < destino_x) && (origen_y > destino_y)) {
+				for (int i = 1; i < diferencia; i++)
+					if (trayectoria_ocupada == false)
+						trayectoria_ocupada = comprobar_posicion(origen_x + i, origen_y - i);
+			}
+			if ((origen_x > destino_x) && (origen_y > destino_y)) {
+				for (int i = 1; i < diferencia; i++)
+					if (trayectoria_ocupada == false)
+						trayectoria_ocupada = comprobar_posicion(origen_x - i, origen_y - i);
+			}
+			if ((origen_x > destino_x) && (origen_y < destino_y)) {
+				for (int i = 1; i < diferencia; i++)
+					if (trayectoria_ocupada == false)
+						trayectoria_ocupada = comprobar_posicion(origen_x - i, origen_y + i);
+			}
+		}
+	}
 	return trayectoria_ocupada;
 }
 
@@ -279,6 +289,7 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
 			peones[i]->setX(destino_x);
 			peones[i]->setY(destino_y);
+			peones[i]->CambiaPrimeraJugada();//Una vez que el peon se mueve ya no puede volver a mover doble
 		}
 	}
 }

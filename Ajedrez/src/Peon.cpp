@@ -1,6 +1,5 @@
-#include "freeglut.h"
 #include "Peon.h"
-#include <math.h>
+
 
 Peon::Peon(int x, int y, char c) {
 	color = c;
@@ -18,9 +17,26 @@ void Peon::dibuja() {
 	glTranslatef(-(posX * 4 - 2), -(posY * 4 - 2), 0);
 }
 
+void Peon::CambiaPrimeraJugada() {
+	PrimeraJugada = false;
+}
+
 bool Peon::comprobar_movimiento(int x, int y) {
-	if ((fabs(posX - x) == 0) && (fabs(posY - y) == 1))
-		return true;
-	else
-		return false;
+	int res;
+	if (color == 'w')
+		 res = y - posY;
+	else res = posY - y;
+
+	if (PrimeraJugada == true) {
+		if ((posX - x == 0) && (res==1 || res==2))//No se puede poner valor absoluto debido a que el peon solo se desplaza en un sentido
+			return true;
+		else
+			return false;
+	}
+	else {
+		if ((posX - x == 0) && (res == 1))
+			return true;
+		else
+			return false;
+	}
 }

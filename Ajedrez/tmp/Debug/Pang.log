@@ -1,1 +1,4 @@
-﻿  Pang.vcxproj -> C:\Users\SMN\Documents\GitHub\Chess_con_Cheese\Ajedrez\bin\Ajedrez.exe
+﻿  ListaPiezas.cpp
+C:\Users\SMN\Documents\GitHub\Chess_con_Cheese\Ajedrez\src\ListaPiezas.cpp(218,19): warning C4244: 'inicializando': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\SMN\Documents\GitHub\Chess_con_Cheese\Ajedrez\src\ListaPiezas.cpp(180): warning C4715: 'ListaPiezas::comprobar_movimiento': no todas las rutas de acceso de control devuelven un valor
+  Pang.vcxproj -> C:\Users\SMN\Documents\GitHub\Chess_con_Cheese\Ajedrez\bin\Ajedrez.exe
