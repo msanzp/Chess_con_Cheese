@@ -17,10 +17,11 @@ ListaPiezas::ListaPiezas(){
 		alfiles[i] = 0;
 		peones[i] = 0;
 	}
-	//Inicializacion de posiciones. 0 es que esa posicion no tiene pieza.
 	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++)
+		for (int j = 0; j < 8; j++) {
 			posiciones[i][j].presencia = false;
+			posiciones[i][j].color = 'n';
+		}
 	}
 }
 
@@ -43,30 +44,38 @@ void ListaPiezas::dibuja(){
 }
 //Indica que posiciones estan con piezas y el color de estas
 void ListaPiezas::introducir_posiciones() {
+	//Inicializacion de posiciones. 0 es que esa posicion no tiene pieza.
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			posiciones[i][j].presencia = false;
+			posiciones[i][j].color = 'n';
+		}
+	}
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			for (int k = 0; k < numeroreyes; k++) {
-				if ((reyes[k]->getX() == i) && (reyes[k]->getY() == j))
+				//Como los vectores en C++ empiezan por 0 se tiene que sumar una unidad para que coincida con las coordenadas de las piezas
+				if ((reyes[k]->getX() == i + 1) && (reyes[k]->getY() == j + 1))
 					posiciones[i][j] = { true,reyes[k]->getColor() };	
 			}
 			for (int k = 0; k < numeroreinas; k++) {
-				if (reinas[k]->getX() == i && reinas[k]->getY() == j)
+				if (reinas[k]->getX() == i + 1 && reinas[k]->getY() == j + 1)
 					posiciones[i][j] = { true,reinas[k]->getColor() };
 			}
 			for (int k = 0; k < numerotorres; k++) {
-				if (torres[k]->getX() == i && torres[k]->getY() == j)
+				if (torres[k]->getX() == i + 1 && torres[k]->getY() == j + 1)
 					posiciones[i][j] = { true,torres[k]->getColor() };
 			}
 			for (int k = 0; k < numerocaballos; k++) {
-				if (caballos[k]->getX() == i && caballos[k]->getY() == j)
+				if (caballos[k]->getX() == i + 1 && caballos[k]->getY() == j + 1)
 					posiciones[i][j] = { true,caballos[k]->getColor() };
 			}
 			for (int k = 0; k < numeroalfiles; k++) {
-				if (alfiles[k]->getX() == i && alfiles[k]->getY() == j)
+				if (alfiles[k]->getX() == i + 1 && alfiles[k]->getY() == j + 1)
 					posiciones[i][j] = { true,alfiles[k]->getColor() };
 			}
 			for (int k = 0; k < numeropeones; k++) {
-				if (peones[k]->getX() == i && peones[k]->getY() == j)
+				if (peones[k]->getX() == i + 1 && peones[k]->getY() == j + 1)
 					posiciones[i][j] = { true,peones[k]->getColor() };
 			}
 		}
@@ -77,7 +86,7 @@ bool ListaPiezas::comprobar_posicion(int x, int y){
 	introducir_posiciones();
 	bool casilla_ocupada = false;
 	//Se comprueba la posicion utilizando la estructura posicion
-	if (posiciones[x][y].presencia==true)
+	if (posiciones[x-1][y-1].presencia==true)
 		casilla_ocupada=true;
 	/*for (int i = 0; i < numeroreyes; i++) {
 		if (reyes[i]->getX() == x && reyes[i]->getY() == y)
@@ -141,11 +150,9 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 	}
 	for (int i = 0; i < numerocaballos; i++) {
 		if (caballos[i]->getX() == origen_x && caballos[i]->getY() == origen_y) {
-			movimiento_valido = caballos[i]->comprobar_movimiento(destino_x, destino_y); // la forma de moverse de la pieza es la adecuada
-			if (movimiento_valido == true)
-				trayectoria_valida = comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y);
-			if (trayectoria_valida == true)//Esto no se deberia de cumplir con piezas de distinto color, si coincide alguna pieza en la trayectoria se puede atrapar
-				movimiento_valido = false;
+			if (posiciones[origen_x - 1][origen_y - 1].color != posiciones[destino_x - 1][destino_y - 1].color)
+				movimiento_valido = caballos[i]->comprobar_movimiento(destino_x, destino_y); // la forma de moverse de la pieza es la adecuada
+			else movimiento_valido = false;
 		}
 
 		for (int i = 0; i < numeroalfiles; i++) {
@@ -162,16 +169,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 			if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
 				int y1;//Variable a introducir en la matriz posiciones
 				if (peones[i]->getColor()=='w') {
-					y1 = origen_y + 1;
+					y1 = origen_y;
 				}
-				else y1 = origen_y - 1;
+				else y1 = origen_y - 2;
 
 				if (origen_x==destino_x) {//Si esta en la misma coordenada x el peon se desplaza
-					if (posiciones[origen_x][y1].presencia == false)//Solo se ejecutara el movimiento si no tiene una pieza delante
+					if (posiciones[origen_x-1][y1].presencia == false)//Solo se ejecutara el movimiento si no tiene una pieza delante
 						movimiento_valido = peones[i]->comprobar_movimiento(destino_x, destino_y); // Comprueba el movimineto horizontal
 				}
 				else if (fabs(origen_x - destino_x) == 1) {//Si esta en distinta x el peon come
-
+					if (posiciones[destino_x-1][destino_y-1].presencia == true && (posiciones[origen_x-1][origen_y-1].color != posiciones[destino_x-1][destino_y-1].color))
+						movimiento_valido = true;
 				}
 			}
 		}
@@ -183,20 +191,20 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 bool ListaPiezas::comprobar_trayectoria(int origen_x, int origen_y, int destino_x, int destino_y) {
 	bool trayectoria_ocupada = false;
 	//Se tiene que comprobar si la posicion de destino, si esta ocupada por una misma pieza del mismo color el movimiento no es posible
-	if (posiciones[destino_x][destino_y].color == posiciones[origen_x][origen_y].color)
+	if (posiciones[destino_x - 1][destino_y - 1].color == posiciones[origen_x - 1][origen_y - 1].color)
 		trayectoria_ocupada = true;
 	else {
 		if (origen_x == destino_x) // se trata de un movimiento horizontal
 		{
 			if (destino_y > origen_y) {
 				for (int i = origen_y + 1; i < destino_y; i++) {
-					if ((trayectoria_ocupada == false) || (i == fabs(destino_y - origen_y)))
+					if ((trayectoria_ocupada == false))
 						trayectoria_ocupada = comprobar_posicion(origen_x, i);
 				}
 			}
 			if (origen_y > destino_y) {
 				for (int i = destino_y + 1; i < origen_y; i++)
-					if ((trayectoria_ocupada == false) || (i == fabs(destino_y - origen_y)))
+					if ((trayectoria_ocupada == false))
 						trayectoria_ocupada = comprobar_posicion(origen_x, i);
 			}
 		}
@@ -204,12 +212,12 @@ bool ListaPiezas::comprobar_trayectoria(int origen_x, int origen_y, int destino_
 		{
 			if (destino_x > origen_x) {
 				for (int i = origen_x + 1; i < destino_x; i++)
-					if ((trayectoria_ocupada == false) || (i == fabs(destino_x - origen_x)))
+					if ((trayectoria_ocupada == false))
 						trayectoria_ocupada = comprobar_posicion(i, origen_y);
 			}
 			if (origen_x > destino_x) {
 				for (int i = destino_x + 1; i < origen_x; i++)
-					if ((trayectoria_ocupada == false) || (i == fabs(destino_x - origen_x)))
+					if ((trayectoria_ocupada == false))
 						trayectoria_ocupada = comprobar_posicion(i, origen_y);
 			}
 		}
