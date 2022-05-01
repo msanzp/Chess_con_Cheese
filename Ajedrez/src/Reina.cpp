@@ -21,10 +21,9 @@ void Reina::dibuja() {
 bool Reina::comprobar_movimiento(int x, int y) {
 	if (fabs(posX - x) == fabs(posY - y))
 		return true;
-	else if ((fabs(posX - x) == 0) && (fabs(posY - y) != 0))
+	if ((fabs(posX - x) == 0) && (fabs(posY - y) != 0))
 		return true;
-	else if ((fabs(posX - x) != 0) && (fabs(posY - y) == 0))
+	if ((fabs(posX - x) != 0) && (fabs(posY - y) == 0))
 		return true;
-	else
-		return false;
+	return false;
 }

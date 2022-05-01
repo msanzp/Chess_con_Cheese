@@ -6,48 +6,48 @@ using namespace std;
 
 Tablero tablero; // creamos la variable global que regulará todo el sistema de juego
 
-//los callback, funciones que seran llamadas automaticamente por la glut
-//cuando sucedan eventos
-//NO HACE FALTA LLAMARLAS EXPLICITAMENTE
-void OnDraw(void); //esta funcion sera llamada para dibujar
-void OnTimer(int value); //esta funcion sera llamada cuando transcurra una temporizacion
-void OnKeyboardDown(unsigned char key, int x, int y); //cuando se pulse una tecla	
+// los callback, funciones que seran llamadas automaticamente por la glut
+// cuando sucedan eventos
+// NO HACE FALTA LLAMARLAS EXPLICITAMENTE
+void OnDraw(void); // esta funcion sera llamada para dibujar
+void OnTimer(int value); // esta funcion sera llamada cuando transcurra una temporizacion
+void OnKeyboardDown(unsigned char key, int x, int y); // cuando se pulse una tecla	
 
 int main(int argc,char* argv[])
 {
 	// Definimos las variables que controlan el desarrollo de la partida
-	int opcion;
-	int turno = 0; //sirve para controlar quien juega, 0 juegan blancas y 1 juegan negras. Como siempre empiezan las blancas, inicialmente vale 0
-	int final_de_partida = 0;
+	int opcion_juego; // sirve para determinar si queremos jugar JUGADOR VS JUGADOR o JUGADOR VS MAQUINA
+	int opcion_color; // si jugamos JUGADOR VS MAQUINA, sirve para determinar si queremos jugar con las negras o con las blancas 
+	int opcion_graficos; // sirve para determinar si queremos jugar en 2D o en 3D
 
 	// Lo primero que debemos hacer es determinar el estilo de juego que vamos a querer jugar
 	do {
 		cout << "Determina el modo de juego:" << endl;
 		cout << "1: Jugador vs Jugador" << endl;
 		cout << "2: Jugador vs Maquina" << endl;
-		cin >> opcion;
-	} while (opcion != 1 && opcion != 2);
+		cin >> opcion_juego;
+	} while (opcion_juego != 1 && opcion_juego != 2);
 	
 	// Antes de comenzar con el desarrollo del juego, inicializamos el gestor de ventanas GLUT y creamos la ventana
 	glutInit(&argc, argv);
 	glutInitWindowSize(800, 600);
-	//glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutCreateWindow("MiJuego");
-	//También, tenemos que habilitar luces y definir perspectiva
+
+	// También, tenemos que habilitar luces y definir perspectiva
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
 	glMatrixMode(GL_PROJECTION);
 	gluPerspective(40.0, 800 / 600.0f, 0.1, 150);
-
-	// una vez hemos determinado el estilo de juego y hemos configurado la pantalla, podemos comenzar a jugar
 	
-	//Registrar los callbacks
+	// Registrar los callbacks
 	glutDisplayFunc(OnDraw);
 	glutTimerFunc(25,OnTimer,0);//le decimos que dentro de 25ms llame 1 vez a la funcion OnTimer()
 	glutKeyboardFunc(OnKeyboardDown);
 
+	// Una vez hemos determinado el estilo de juego y hemos configurado la pantalla, podemos comenzar a jugar
 	tablero.comienzo_partida(); // sirve para determinar los valores iniciales de las piezas
 
 	//pasarle el control a GLUT,que llamara a los callbacks
@@ -89,4 +89,3 @@ void OnTimer(int value)
 	glutTimerFunc(25,OnTimer,0);
 	glutPostRedisplay();
 }
-//Hola mundo

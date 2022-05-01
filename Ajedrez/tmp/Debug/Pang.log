@@ -1,4 +1,38 @@
-﻿  ListaPiezas.cpp
-C:\Users\SMN\Documents\GitHub\Chess_con_Cheese\Ajedrez\src\ListaPiezas.cpp(226,19): warning C4244: 'inicializando': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\SMN\Documents\GitHub\Chess_con_Cheese\Ajedrez\src\ListaPiezas.cpp(188): warning C4715: 'ListaPiezas::comprobar_movimiento': no todas las rutas de acceso de control devuelven un valor
-  Pang.vcxproj -> C:\Users\SMN\Documents\GitHub\Chess_con_Cheese\Ajedrez\bin\Ajedrez.exe
+﻿  Tablero.cpp
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(160,24): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(160,17): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(161,30): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(161,17): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(162,36): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(162,23): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(163,30): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(163,23): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(191,75): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(191,67): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(191,40): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(192,71): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(192,63): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(192,36): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(193,75): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(193,67): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(193,36): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(194,79): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(194,71): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(194,40): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(206,37): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(206,26): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(208,34): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(208,20): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(214,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(214,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(214,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(215,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(215,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(215,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(216,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(216,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(216,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(217,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(217,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(217,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+  Pang.vcxproj -> C:\Users\sergi\Documents\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\bin\Ajedrez.exe

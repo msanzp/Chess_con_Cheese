@@ -21,8 +21,7 @@ void Caballo::dibuja() {
 bool Caballo::comprobar_movimiento(int x, int y) {
 	if ((fabs(posX - x) == 2) && (fabs(posY - y) == 1))
 		return true;
-	else if ((fabs(posX - x) == 1) && (fabs(posY - y) == 2))
+	if ((fabs(posX - x) == 1) && (fabs(posY - y) == 2))
 		return true;
-	else
-		return false;
+	return false;
 }

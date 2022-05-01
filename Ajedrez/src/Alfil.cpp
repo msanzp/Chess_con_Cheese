@@ -1,6 +1,5 @@
 #include "Alfil.h"
 
-
 Alfil::Alfil(int x, int y, char c) {
 	color = c;
 	posX = x;

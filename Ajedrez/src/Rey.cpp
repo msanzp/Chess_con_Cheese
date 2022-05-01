@@ -2,10 +2,11 @@
 #include "Rey.h"
 #include <math.h>
 
-Rey::Rey(int x, int y, char c) {
+Rey::Rey(int x, int y, char c, bool p) {
 	color = c;
 	posX = x;
 	posY = y;
+	primermovimiento = p;
 }
 
 void Rey::dibuja() {
@@ -21,10 +22,9 @@ void Rey::dibuja() {
 bool Rey::comprobar_movimiento(int x, int y){
 	if ((fabs(posX - x) == 1) && (fabs(posY - y) == 0))
 		return true;
-	else if ((fabs(posX - x) == 0) && (fabs(posY - y) == 1))
+	if ((fabs(posX - x) == 0) && (fabs(posY - y) == 1))
 		return true;
-	else if ((fabs(posX - x) == 1) && (fabs(posY - y) == 1))
+	if ((fabs(posX - x) == 1) && (fabs(posY - y) == 1))
 		return true;
-	else
-		return false;
+	return false;
 }

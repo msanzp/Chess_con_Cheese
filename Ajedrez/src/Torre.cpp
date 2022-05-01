@@ -2,10 +2,11 @@
 #include "Torre.h"
 #include <math.h>
 
-Torre::Torre(int x, int y, char c) {
+Torre::Torre(int x, int y, char c, bool p) {
 	color = c;
 	posX = x;
 	posY = y;
+	primermovimiento = p;
 }
 
 void Torre::dibuja() {
@@ -21,8 +22,7 @@ void Torre::dibuja() {
 bool Torre::comprobar_movimiento(int x, int y) {
 	if ((fabs(posX - x) == 0) && (fabs(posY - y) != 0))
 		return true;
-	else if ((fabs(posX - x) != 0) && (fabs(posY - y) == 0))
+	if ((fabs(posX - x) != 0) && (fabs(posY - y) == 0))
 		return true;
-	else
-		return false;
+	return false;
 }
