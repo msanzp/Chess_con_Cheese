@@ -1,4 +1,5 @@
 #pragma once
+#include "ETSIDI.h"
 
 class Pieza {
 protected:

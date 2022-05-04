@@ -349,6 +349,7 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 		}
 	}
 	for (int i = 0; i < numeropeones; i++) {
+		bool comido_por_peon;
 		char color;
 		if (turno == 0)
 			color = 'b';
@@ -357,9 +358,12 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 
 		if (peones[i]->getX() == destino_x && peones[i]->getY() == destino_y)
 			eliminar(peones[i]);
-		if (peones[i]->getX() == destino_x && peones[i]->getY() == origen_y && peones[i]->getColor() == color && peones[i]->getJugadaPrimerMovimiento() == numero_jugadas - 1)
-			eliminar(peones[i]);
+		
 		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
+			for (int j = 0; j < numeropeones; j++) {
+				if (peones[j]->getX() == destino_x && peones[j]->getY() == origen_y && peones[j]->getColor() == color && peones[j]->getJugadaPrimerMovimiento() == numero_jugadas - 1)
+					eliminar(peones[j]);
+			}
 			peones[i]->setX(destino_x);
 			peones[i]->setY(destino_y);
 			if(peones[i]->getPrimerMovimiento() == true && fabs(destino_y - origen_y) == 2)
@@ -761,6 +765,7 @@ bool ListaPiezas::comprobar_comeralpaso(int origen_x, int origen_y, int destino_
 		color = 'b';
 	if (turno == 1)
 		color = 'w';
+
 	for (int j = 0; j < numeropeones; j++) {
 		if (variaciony == 1 && peones[j]->getX() == destino_x && peones[j]->getY() == origen_y && peones[j]->getColor() == color && peones[j]->getJugadaPrimerMovimiento() == numero_jugadas - 1) {
 			return true;

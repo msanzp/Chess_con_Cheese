@@ -2,16 +2,17 @@
 #include "freeglut.h"
 #include <iostream>
 
+Tablero tablero; // creamos la variable global que regulará todo el sistema de juego
+
 using namespace std;
 
-Tablero tablero; // creamos la variable global que regulará todo el sistema de juego
 
 // los callback, funciones que seran llamadas automaticamente por la glut
 // cuando sucedan eventos
 // NO HACE FALTA LLAMARLAS EXPLICITAMENTE
 void OnDraw(void); // esta funcion sera llamada para dibujar
 void OnTimer(int value); // esta funcion sera llamada cuando transcurra una temporizacion
-void OnKeyboardDown(unsigned char key, int x, int y); // cuando se pulse una tecla	
+void clickraton(int boton, int estado, int x, int y); // clic de la posicion de origen
 
 int main(int argc,char* argv[])
 {
@@ -44,8 +45,8 @@ int main(int argc,char* argv[])
 	
 	// Registrar los callbacks
 	glutDisplayFunc(OnDraw);
-	glutTimerFunc(25,OnTimer,0);//le decimos que dentro de 25ms llame 1 vez a la funcion OnTimer()
-	glutKeyboardFunc(OnKeyboardDown);
+	glutTimerFunc(25,OnTimer,0); //le decimos que dentro de 25ms llame 1 vez a la funcion OnTimer()
+	glutMouseFunc(clickraton);
 
 	// Una vez hemos determinado el estilo de juego y hemos configurado la pantalla, podemos comenzar a jugar
 	tablero.comienzo_partida(); // sirve para determinar los valores iniciales de las piezas
@@ -64,28 +65,35 @@ void OnDraw(void)
 	//Para definir el punto de vista
 	glMatrixMode(GL_MODELVIEW);	
 	glLoadIdentity();
-	
 	tablero.dibuja();
 
 	//no borrar esta linea ni poner nada despues
 	glutSwapBuffers();
 }
 
-void OnKeyboardDown(unsigned char key, int x_t, int y_t)
-{
-	//poner aqui el código de teclado
-	tablero.tecla(key);
-
-	glutPostRedisplay();
-}
-
 void OnTimer(int value)
 {
-//poner aqui el código de animacion
-	tablero.mueve();
+	//poner aqui el código de animacion
+
 	tablero.ejecutar_movimiento();
 
 	//no borrar estas lineas
 	glutTimerFunc(25,OnTimer,0);
 	glutPostRedisplay();
+}
+
+void clickraton(int boton, int estado, int x, int y) // sirve para controlar el juego por ratón
+{
+	if (boton == GLUT_LEFT_BUTTON && tablero.getCasilla_origen() == true)
+	{
+		tablero.setCoordenadaX_origen(tablero.coordenadaX(x));
+		tablero.setCoordenadaY_origen(tablero.coordenadaY(y));
+		glutPostRedisplay();
+	}
+	if (boton == GLUT_LEFT_BUTTON && tablero.getCasilla_destino() == true)
+	{
+		tablero.setCoordenadaX_destino(tablero.coordenadaX(x));
+		tablero.setCoordenadaY_destino(tablero.coordenadaY(y));
+		glutPostRedisplay();
+	}
 }

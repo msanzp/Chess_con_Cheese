@@ -9,13 +9,52 @@ Peon::Peon(int x, int y, char c) {
 }
 
 void Peon::dibuja() {
-	if (color == 'w')
-		glColor3ub(255, 255, 255);
-	if (color == 'b')
-		glColor3ub(255, 0, 0);
-	glTranslatef(posX * 4 - 2, posY * 4 - 2, 0);
-	glutSolidSphere(1.5, 20, 20);
-	glTranslatef(-(posX * 4 - 2), -(posY * 4 - 2), 0);
+	glEnable(GL_TEXTURE_2D);
+	for (int j = 1; j < 9; j++) {
+		for (int i = 1; i < 9; i++) {
+			if (posX == j && posY == i) {
+				if (j % 2 == 1) {//Bucle para las coordenadas y
+					if (i % 2 == 1) {//Bucle para las coordenadas x
+						if (color == 'w')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonblanco_fondonegro.png").id);
+						if (color == 'b')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonnegro_fondonegro.png").id);
+					}
+					else {
+						if (color == 'w')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonblanco_fondoblanco.png").id);
+						if (color == 'b')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonnegro_fondoblanco.png").id);
+					}
+				}
+				else {
+					if (i % 2 == 0) {
+						if (color == 'w')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonblanco_fondonegro.png").id);
+						if (color == 'b')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonnegro_fondonegro.png").id);
+					}
+					else {
+						if (color == 'w')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonblanco_fondoblanco.png").id);
+						if (color == 'b')
+							glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonnegro_fondoblanco.png").id);
+					}
+
+				}
+				glDisable(GL_LIGHTING);
+				glBegin(GL_POLYGON);
+				glColor3f(1, 1, 1);
+				glTexCoord2d(0, 1);		glVertex3f(posX * 4 - 4, posY * 4 - 4, 0);
+				glTexCoord2d(1, 1);		glVertex3f(posX * 4, posY * 4 - 4, 0);
+				glTexCoord2d(1, 0);		glVertex3f(posX * 4, posY * 4, 0);
+				glTexCoord2d(0, 0);		glVertex3f(posX * 4 - 4, posY * 4, 0);
+				glEnd();
+			}
+		}
+	}
+	glEnable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
 }
 
 bool Peon::comprobar_movimiento(int x, int y) {
