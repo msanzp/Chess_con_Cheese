@@ -22,12 +22,13 @@ private:
 	Posicion destino; // sirve para determinar la posicion de destino de la pieza que quiero mover
 
 	ListaPiezas piezas; //almacen de todas las piezas presentes en el tablero
+public:
 	float x_ojo;
 	float y_ojo;
 	float z_ojo;
-public:
+
 	~Tablero();
-	void comienzo_partida();
+	void comienzo_partida(int juego, int color, int gráficos);
 	void ejecutar_movimiento(); // esta funcion controla el funcionamiento de cada jugada
 
 	// funciones set
@@ -37,11 +38,15 @@ public:
 	void setCoordenadaY_destino(int y) { destino.posY = y; }
 
 	// funciones get
+	int getOpcionJuego() { return opcion_juego; }
+	int getOpcionColor() { return opcion_color; }
+	int getOpcionGraficos() { return opcion_graficos; }
 	bool getCasilla_origen() { return casilla_origen; }
 	bool getCasilla_destino() { return casilla_destino; }
 
 	// funciones que sirven para dibujar el tablero
-	void dibuja(); // dibuja las casillas y las piezs sobre el tablero
+	void dibuja2D();
+	void dibuja3D();
 	void actualizarpantalla(); // copiamos la funcion OnDraw para poder llamarla en cualquier momento
 
 	// funciones para el control por ratón

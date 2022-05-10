@@ -7,8 +7,11 @@ Tablero::~Tablero() {
 	piezas.destruirContenido();
 }
 
-void Tablero::comienzo_partida()
+void Tablero::comienzo_partida(int juego, int color, int gráficos)
 {
+	opcion_juego = juego;
+	opcion_color = color;
+	opcion_graficos = gráficos;
 	turno = 0; // siempre empiezan jugando las blancas
 	casilla_origen = true;
 	casilla_destino = false;
@@ -78,6 +81,10 @@ void Tablero::ejecutar_movimiento()
 		color = 'b';
 
 	if (piezas.comprobar_jaquemate(turno, piezas) == false && piezas.comprobar_ahogado(turno) == false)	{
+		if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
+			cout << "Casilla origen" << endl,
+			cin >> origen.posX >> origen.posY;
+		}
 		if (origen.posX != 0 && origen.posY != 0) {
 			if (piezas.comprobar_posicion(origen.posX, origen.posY, turno) == true) {
 				casilla_origen = false;
@@ -85,6 +92,10 @@ void Tablero::ejecutar_movimiento()
 				pieza_selecionada.posX = origen.posX;
 				pieza_selecionada.posY = origen.posY;
 				actualizarpantalla();
+				if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
+					cout << "Casilla destino" << endl,
+					cin >> destino.posX >> destino.posY;
+				}
 				if (destino.posX != 0 && destino.posY != 0) {
 					if (piezas.comprobar_posicion(destino.posX, destino.posY, turno) == true) {
 						origen.posX = destino.posX;
@@ -142,7 +153,7 @@ void Tablero::ejecutar_movimiento()
 	}
 }
 
-void Tablero::dibuja()
+void Tablero::dibuja2D()
 {
 	gluLookAt(x_ojo, y_ojo, z_ojo,  // posicion del ojo
 		16, 16, 0.0,      // hacia que punto mira  (0,0,0) 
@@ -200,15 +211,6 @@ void Tablero::dibuja()
 		otro_turno = 0;
 
 	if ((pieza_selecionada.posX != 0) && (pieza_selecionada.posY != 0)){
-		// iluminamos la casilla de la pieza seleccionada
-		glBegin(GL_POLYGON);
-		glColor3ub(0, 255, 0);
-		glVertex3f(pieza_selecionada.posX * 4 - 4, pieza_selecionada.posY * 4, 0.1);
-		glVertex3f(pieza_selecionada.posX * 4, pieza_selecionada.posY * 4, 0.1);
-		glVertex3f(pieza_selecionada.posX * 4, pieza_selecionada.posY * 4 - 4, 0.1);
-		glVertex3f(pieza_selecionada.posX * 4 - 4, pieza_selecionada.posY * 4 - 4, 0.1);
-		glEnd();
-
 		// marcamos todos los posibles destinos de la pieza seleccionada
 		for (int i = 1; i < 9; i++) {
 			for (int j = 1; j < 9; j++) {
@@ -242,54 +244,99 @@ void Tablero::dibuja()
 	glEnable(GL_LIGHTING);
 
 	// DIBUJAMOS LAS PIEZAS
-	piezas.dibuja();
+	piezas.dibuja2D(pieza_selecionada.posX, pieza_selecionada.posY);
 }
 
+void Tablero::dibuja3D()
+{
+	gluLookAt(-70, 65, 55,  // posicion del ojo
+		24, 0, 24,      // hacia que punto mira  (0,0,0) 
+		0, 1, 0);      // definimos hacia arriba (eje Y)  
+
+	// DIBUJO DEL TABLERO
+	// creamos los cuadrados de colores del tablero
+	for (int j = 0; j < 10; j++) {
+		for (int i = 0; i < 10; i++) {
+			if (j == 0 || j == 9 || i == 0 || i == 9)
+				glColor3ub(153, 102, 51);
+			else if (j % 2 == 1) {//Bucle para las coordenadas y
+				if (i % 2 == 1)//Bucle para las coordenadas x
+					glColor3ub(0, 0, 204);
+				else
+					glColor3ub(102, 204, 255);
+			}
+			else {
+				if (i % 2 == 0)
+					glColor3ub(0, 0, 204);
+				else
+					glColor3ub(102, 204, 255);
+			}
+			if(pieza_selecionada.posX != 0 && pieza_selecionada.posY != 0 && pieza_selecionada.posX == j && pieza_selecionada.posY == i)
+				glColor3ub(0, 255, 0);
+			glTranslatef(i * 6 - 3, -3, j * 6 - 3);
+			glutSolidCube(6);
+			glTranslatef(- i * 6 + 3, 3, - j * 6 + 3);
+		}
+	}
+
+	// DIBUJAMOS LAS PIEZAS
+	piezas.dibuja3D();
+}
+
+
 void Tablero::actualizarpantalla() {
+	//Borrado de la pantalla	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//Para definir el punto de vista
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	dibuja();
+	if (opcion_graficos == 1)
+		dibuja2D();
+	if (opcion_graficos == 2)
+		dibuja3D();
+
+	//no borrar esta linea ni poner nada despues
 	glutSwapBuffers();
 }
 
 int Tablero::coordenadaX(int x) {
-	if (x >= 135 && x <= 162)
+	if (x >= 135 && x <= 200)
 		return 1;
-	else if (x >= 163 && x <= 269)
+	else if (x >= 201 && x <= 266)
 		return 2;
-	else if (x >= 270 && x <= 334)
+	else if (x >= 267 && x <= 333)
 		return 3;
-	else if (x >= 335 && x <= 401)
+	else if (x >= 334 && x <= 400)
 		return 4;
-	else if (x >= 402 && x <= 467)
+	else if (x >= 401 && x <= 465)
 		return 5;
-	else if (x >= 468 && x <= 532)
+	else if (x >= 466 && x <= 532)
 		return 6;
-	else if (x >= 533 && x <= 598)
+	else if (x >= 533 && x <= 597)
 		return 7;
-	else if (x >= 599 && x <= 664)
+	else if (x >= 598 && x <= 665)
 		return 8;
 	else
 		return 0;
 }
 
 int Tablero::coordenadaY(int y) {
-	if (y >= 37 && y <= 102)
+	if (y >= 43 && y <= 118)
 		return 8;
-	else if (y >= 103 && y <= 169)
+	else if (y >= 119 && y <= 196)
 		return 7;
-	else if (y >= 170 && y <= 234)
+	else if (y >= 197 && y <= 273)
 		return 6;
-	else if (y >= 235 && y <= 298)
+	else if (y >= 274 && y <= 349)
 		return 5;
-	else if (y >= 299 && y <= 365)
+	else if (y >= 350 && y <= 427)
 		return 4;
-	else if (y >= 366 && y <= 433)
+	else if (y >= 428 && y <= 500)
 		return 3;
-	else if (y >= 434 && y <= 498)
+	else if (y >= 501 && y <= 580)
 		return 2;
-	else if (y >= 499 && y <= 563)
+	else if (y >= 581 && y <= 657)
 		return 1;
 	else
 		return 0;

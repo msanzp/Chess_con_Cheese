@@ -30,7 +30,8 @@ public:
 	ListaPiezas();
 	ListaPiezas(const ListaPiezas& copia); // este constructor copia sirve para evaluar el jaque del movimiento que voy a realizar
 	virtual ~ListaPiezas();
-	void dibuja(); // dibuja todas las piezas en el tablero
+	void dibuja2D(int pieza_seleccionadaX, int pieza_seleccionadaY);
+	void dibuja3D();
 	
 	// funciones para comprobar la validez de los movimientos
 	bool comprobar_posicion(int x, int y, int turno); // devuelve TRUE si la posición está ocupada por una ficha de mi color

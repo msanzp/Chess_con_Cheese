@@ -6,7 +6,6 @@ private:
 	bool primermovimiento; // esta variable me servirá para el enroque
 public:
 	Rey(int x, int y, char c, bool p);
-	void dibuja();
 
 	// funciones get y set
 	void setPrimerMovimiento() { primermovimiento = false; } // Cuando se mueve el rey por primerza vez se cambia primermovimiento a false

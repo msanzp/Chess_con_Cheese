@@ -59,19 +59,34 @@ ListaPiezas::ListaPiezas(const ListaPiezas& copia) {
 ListaPiezas::~ListaPiezas() {}
 
 // dibuja todas las piezas presentes en el tablero
-void ListaPiezas::dibuja(){
+void ListaPiezas::dibuja2D(int pieza_seleccionadaX, int pieza_seleccionadaY){
 	for (int i = 0; i < numeroreyes; i++)
-		reyes[i]->dibuja();
+		reyes[i]->dibuja2D("imagenes/2D/reyblanco_fondoblanco.png", "imagenes/2D/reyblanco_fondonegro.png", "imagenes/2D/reynegro_fondoblanco.png", "imagenes/2D/reynegro_fondonegro.png", "imagenes/2D/reyblanco_fondoverde.png", "imagenes/2D/reynegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numeroreinas; i++)
-		reinas[i]->dibuja();
+		reinas[i]->dibuja2D("imagenes/2D/reinablanca_fondoblanco.png", "imagenes/2D/reinablanca_fondonegro.png", "imagenes/2D/reinanegra_fondoblanco.png", "imagenes/2D/reinanegra_fondonegro.png", "imagenes/2D/reinablanca_fondoverde.png", "imagenes/2D/reinanegra_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numerotorres; i++)
-		torres[i]->dibuja();
+		torres[i]->dibuja2D("imagenes/2D/torreblanca_fondoblanco.png", "imagenes/2D/torreblanca_fondonegro.png", "imagenes/2D/torrenegra_fondoblanco.png", "imagenes/2D/torrenegra_fondonegro.png", "imagenes/2D/torreblanca_fondoverde.png", "imagenes/2D/torrenegra_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numerocaballos; i++)
-		caballos[i]->dibuja();
+		caballos[i]->dibuja2D("imagenes/2D/caballoblanco_fondoblanco.png", "imagenes/2D/caballoblanco_fondonegro.png", "imagenes/2D/caballonegro_fondoblanco.png", "imagenes/2D/caballonegro_fondonegro.png", "imagenes/2D/caballoblanco_fondoverde.png", "imagenes/2D/caballonegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numeroalfiles; i++)
-		alfiles[i]->dibuja();
+		alfiles[i]->dibuja2D("imagenes/2D/alfilblanco_fondoblanco.png", "imagenes/2D/alfilblanco_fondonegro.png", "imagenes/2D/alfilnegro_fondoblanco.png", "imagenes/2D/alfilnegro_fondonegro.png", "imagenes/2D/alfilblanco_fondoverde.png", "imagenes/2D/alfilnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numeropeones; i++)
-		peones[i]->dibuja();
+		peones[i]->dibuja2D("imagenes/2D/peonblanco_fondoblanco.png", "imagenes/2D/peonblanco_fondonegro.png", "imagenes/2D/peonnegro_fondoblanco.png", "imagenes/2D/peonnegro_fondonegro.png", "imagenes/2D/peonblanco_fondoverde.png", "imagenes/2D/peonnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
+}
+
+void ListaPiezas::dibuja3D() {
+	for (int i = 0; i < numeroreyes; i++)
+		reyes[i]->dibuja3D("imagenes/rey.txt");
+	for (int i = 0; i < numeroreinas; i++)
+		reinas[i]->dibuja3D("imagenes/reina.txt");
+	for (int i = 0; i < numerotorres; i++)
+		torres[i]->dibuja3D("imagenes/torre.txt");
+	for (int i = 0; i < numerocaballos; i++)
+		caballos[i]->dibuja3D("imagenes/caballo.txt");
+	for (int i = 0; i < numeroalfiles; i++)
+		alfiles[i]->dibuja3D("imagenes/alfil.txt");
+	for (int i = 0; i < numeropeones; i++)
+		peones[i]->dibuja3D("imagenes/peon.txt");
 }
 
 // esta funcion sirve para determinar si una determinada casilla está ocupada por por una pieza de un color especifico

@@ -7,7 +7,6 @@ private:
 	int jugada_primer_movimiento = 0; // esta variable sirve para comer al paso
 public:
 	Peon(int x, int y, char c);
-	void dibuja();
 
 	// funciones get y set
 	void setJugadaPrimerMovimiento(int t) { jugada_primer_movimiento = t; }
