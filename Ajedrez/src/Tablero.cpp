@@ -7,12 +7,8 @@ Tablero::~Tablero() {
 	piezas.destruirContenido();
 }
 
-void Tablero::comienzo_partida(int juego, int color, int gráficos)
+void Tablero::comienzo_partida()
 {
-	opcion_juego = juego;
-	opcion_color = color;
-	opcion_graficos = gráficos;
-	turno = 0; // siempre empiezan jugando las blancas
 	casilla_origen = true;
 	casilla_destino = false;
 	pieza_selecionada.posX = pieza_selecionada.posY = 0;
@@ -72,45 +68,45 @@ void Tablero::comienzo_partida(int juego, int color, int gráficos)
 	z_ojo = 50;
 }
 
-void Tablero::ejecutar_movimiento()
+void Tablero::juego_local(int *turno, int opcion_graficos)
 {
 	bool jaque = false;
 	bool jaque_mate = false;
 	char color = 'w'; // esta variable sirve para saber que color de pieza mueve el jugador del turno
-	if (turno == 1)
+	if (*turno == 1)
 		color = 'b';
 
-	if (piezas.comprobar_jaquemate(turno, piezas) == false && piezas.comprobar_ahogado(turno) == false)	{
+	if (piezas.comprobar_jaquemate(*turno, piezas) == false && piezas.comprobar_ahogado(*turno) == false)	{
 		if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
 			cout << "Casilla origen" << endl,
 			cin >> origen.posX >> origen.posY;
 		}
 		if (origen.posX != 0 && origen.posY != 0) {
-			if (piezas.comprobar_posicion(origen.posX, origen.posY, turno) == true) {
+			if (piezas.comprobar_posicion(origen.posX, origen.posY, *turno) == true) {
 				casilla_origen = false;
 				casilla_destino = true;
 				pieza_selecionada.posX = origen.posX;
 				pieza_selecionada.posY = origen.posY;
-				actualizarpantalla();
+				actualizarpantalla(*turno, opcion_graficos);
 				if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
 					cout << "Casilla destino" << endl,
 					cin >> destino.posX >> destino.posY;
 				}
 				if (destino.posX != 0 && destino.posY != 0) {
-					if (piezas.comprobar_posicion(destino.posX, destino.posY, turno) == true) {
+					if (piezas.comprobar_posicion(destino.posX, destino.posY, *turno) == true) {
 						origen.posX = destino.posX;
 						origen.posY = destino.posY;
 						destino.posX = destino.posY = 0;
 						pieza_selecionada.posX = origen.posX;
 						pieza_selecionada.posY = origen.posY;
-						actualizarpantalla();
+						actualizarpantalla(*turno, opcion_graficos);
 					}
-					else if (piezas.comprobar_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, turno) == true) {
+					else if (piezas.comprobar_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, *turno) == true) {
 						ListaPiezas piezas2 = (piezas);
-						piezas2.ejecuta_movimientocopia(origen.posX, origen.posX, destino.posX, destino.posY, turno);
+						piezas2.ejecuta_movimientocopia(origen.posX, origen.posX, destino.posX, destino.posY, *turno);
 						for (int i = 0; i < piezas2.getNumeroReyes(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getRey(i).getColor() == color)
-								jaque = piezas2.comprobar_jaque2(piezas2.getRey(i).getX(), piezas2.getRey(i).getY(), turno);
+								jaque = piezas2.comprobar_jaque2(piezas2.getRey(i).getX(), piezas2.getRey(i).getY(), *turno);
 						}
 						if (jaque == true) {
 							origen.posX = origen.posY = 0;
@@ -119,14 +115,14 @@ void Tablero::ejecutar_movimiento()
 							casilla_destino = false;
 						}
 						else {
-							piezas.ejecuta_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, turno);
+							piezas.ejecuta_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, *turno);
 							pieza_selecionada.posX = pieza_selecionada.posY = 0;
 							origen.posX = origen.posY = 0;
 							destino.posX = destino.posY = 0;
-							if (turno == 0)
-								turno = 1;
+							if (*turno == 0)
+								*turno = 1;
 							else
-								turno = 0;
+								*turno = 0;
 							casilla_origen = true;
 							casilla_destino = false;
 						}	
@@ -146,14 +142,14 @@ void Tablero::ejecutar_movimiento()
 		}
 	}
 	else {
-		if(piezas.comprobar_jaquemate(turno, piezas) == true)
+		if(piezas.comprobar_jaquemate(*turno, piezas) == true)
 			cout << "JAQUE MATE" << endl;
-		if (piezas.comprobar_ahogado(turno) == true)
+		if (piezas.comprobar_ahogado(*turno) == true)
 			cout << "TABLAS" << endl;
 	}
 }
 
-void Tablero::dibuja2D()
+void Tablero::dibuja2D(int turno)
 {
 	gluLookAt(x_ojo, y_ojo, z_ojo,  // posicion del ojo
 		16, 16, 0.0,      // hacia que punto mira  (0,0,0) 
@@ -284,7 +280,7 @@ void Tablero::dibuja3D()
 }
 
 
-void Tablero::actualizarpantalla() {
+void Tablero::actualizarpantalla(int turno, int opcion_graficos) {
 	//Borrado de la pantalla	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -292,7 +288,7 @@ void Tablero::actualizarpantalla() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	if (opcion_graficos == 1)
-		dibuja2D();
+		dibuja2D(turno);
 	if (opcion_graficos == 2)
 		dibuja3D();
 
