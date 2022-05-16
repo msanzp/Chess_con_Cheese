@@ -13,6 +13,10 @@ private:
 	bool casilla_origen; // esta variable sirve para saber si tengo que seleccionar la casilla de origen
 	bool casilla_destino; // esta variable sirve para saber si tengo que seleccionar la casilla de destino
 	bool movimiento_realizado; // esta variable sirve para saber cuando hemos realizado un movimiento
+	int opcion_juego; // sirve para determinar si queremos jugar JUGADOR VS JUGADOR o JUGADOR VS MAQUINA
+	int opcion_color; // si jugamos JUGADOR VS MAQUINA, sirve para determinar si queremos jugar con las negras o con las blancas
+	int opcion_graficos; // sirve para determinar si queremos jugar en 2D o en 3D
+	int turno; //sirve para controlar quien juega, 0 juegan blancas y 1 juegan negras
 	Posicion pieza_selecionada; // sirve para pintar todos los posibles movimientos que puede hacer una pieza seleccionada
 	Posicion origen; // sirve para determinar la posicion de origen de la pieza que quiero mover
 	Posicion destino; // sirve para determinar la posicion de destino de la pieza que quiero mover
@@ -24,8 +28,8 @@ public:
 	float z_ojo;
 
 	~Tablero();
-	void comienzo_partida();
-	void juego_local(int* turno, int opcion_graficos); // esta funcion controla el funcionamiento de cada jugada
+	void comienzo_partida(int juego, int color, int gráficos);
+	void ejecutar_movimiento(); // esta funcion controla el funcionamiento de cada jugada
 
 	// funciones set
 	void setCoordenadaX_origen(int x) { origen.posX = x; }
@@ -34,13 +38,16 @@ public:
 	void setCoordenadaY_destino(int y) { destino.posY = y; }
 
 	// funciones get
+	int getOpcionJuego() { return opcion_juego; }
+	int getOpcionColor() { return opcion_color; }
+	int getOpcionGraficos() { return opcion_graficos; }
 	bool getCasilla_origen() { return casilla_origen; }
 	bool getCasilla_destino() { return casilla_destino; }
 
 	// funciones que sirven para dibujar el tablero
-	void dibuja2D(int turno);
+	void dibuja2D();
 	void dibuja3D();
-	void actualizarpantalla(int turno, int opcion_graficos);
+	void actualizarpantalla(); // copiamos la funcion OnDraw para poder llamarla en cualquier momento
 
 	// funciones para el control por ratón
 	int coordenadaX(int x);

@@ -24,8 +24,10 @@ private:
 	int numeroreinas; //número de reinas presentes en la partida
 	int numerotorres; //número de torres presentes en la partida
 	int numerocaballos; //número de caballos presentes en la partida
-	int numeroalfiles; //anúmero de alfiles presentes en la partida
-	int numeropeones; //anúmero de peones presentes en la partida
+	int numeroalfiles; //número de alfiles presentes en la partida
+	int numeropeones; //número de peones presentes en la partida
+	int numeropiezas; //numero de piezas comidas en la partida	
+	Pieza* borradas[MAX_PIEZAS]; //array que representa las fichas comidas y despues representadas al margen
 public:
 	ListaPiezas();
 	ListaPiezas(const ListaPiezas& copia); // este constructor copia sirve para evaluar el jaque del movimiento que voy a realizar
@@ -73,6 +75,9 @@ public:
 	bool agregar(Caballo* c);
 	bool agregar(Alfil* a);
 	bool agregar(Peon* p);
+
+	bool añadir(Pieza* p);
+	void dibujaBorradas2D();
 
 	//funciones para eliminar piezas de los vectores
 	void eliminar(Rey* k);

@@ -7,6 +7,8 @@ Torre::Torre(int x, int y, char c, bool p) {
 	posX = x;
 	posY = y;
 	primermovimiento = p;
+	// 0=rey, 1=reina, 2=alfil, 3=peon, 4=caballo, 5=torre
+	tipo = 5;
 }
 
 bool Torre::comprobar_movimiento(int x, int y) {

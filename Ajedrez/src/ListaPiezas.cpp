@@ -12,6 +12,7 @@ ListaPiezas::ListaPiezas(){
 	numerocaballos = 0;
 	numeroalfiles = 0;
 	numeropeones = 0;
+	numeropiezas = 0;
 	for (int i = 0; i < MAX_PIEZAS; i++) {
 		reyes[i] = 0;
 		reinas[i] = 0;
@@ -19,6 +20,7 @@ ListaPiezas::ListaPiezas(){
 		caballos[i] = 0;
 		alfiles[i] = 0;
 		peones[i] = 0;
+		borradas[i] = 0;
 	}
 }
 
@@ -30,6 +32,7 @@ ListaPiezas::ListaPiezas(const ListaPiezas& copia) {
 	numerocaballos = 0;
 	numeroalfiles = 0;
 	numeropeones = 0;
+	numeropiezas = 0;
 	for (int i = 0; i < copia.numeroreyes; i++) {
 		Rey* rey = new Rey(copia.reyes[i]->getX(), copia.reyes[i]->getY(), copia.reyes[i]->getColor(), copia.reyes[i]->getPrimerMovimiento());
 		agregar(rey);
@@ -72,6 +75,22 @@ void ListaPiezas::dibuja2D(int pieza_seleccionadaX, int pieza_seleccionadaY){
 		alfiles[i]->dibuja2D("imagenes/2D/alfilblanco_fondoblanco.png", "imagenes/2D/alfilblanco_fondonegro.png", "imagenes/2D/alfilnegro_fondoblanco.png", "imagenes/2D/alfilnegro_fondonegro.png", "imagenes/2D/alfilblanco_fondoverde.png", "imagenes/2D/alfilnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numeropeones; i++)
 		peones[i]->dibuja2D("imagenes/2D/peonblanco_fondoblanco.png", "imagenes/2D/peonblanco_fondonegro.png", "imagenes/2D/peonnegro_fondoblanco.png", "imagenes/2D/peonnegro_fondonegro.png", "imagenes/2D/peonblanco_fondoverde.png", "imagenes/2D/peonnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
+	dibujaBorradas2D();
+}
+
+void ListaPiezas::dibujaBorradas2D() 
+{
+	GLfloat posicion_blacas=0;
+	GLfloat posicion_negras=0;
+	
+	for (int i = 0; i < numeropiezas; i++)
+	{
+		borradas[i]->dibuja2D_borrada(posicion_blacas, posicion_negras);
+
+		if (borradas[i]->esBlanca()) posicion_blacas++;
+		else if (borradas[i]->esNegra()) posicion_negras++;
+	}
+	
 }
 
 void ListaPiezas::dibuja3D() {
@@ -124,10 +143,10 @@ bool ListaPiezas::comprobar_posicion(int x, int y, int turno){
 
 // esta funcion sirve para determinar si una determinada casilla está ocupada por alguna pieza
 bool ListaPiezas::comprobar_posicion(int x, int y){
-	for (int i = 0; i < numeroreyes; i++) {
+	for (int i = 0; i < numeroreyes; i++) 
 		if (reyes[i]->getX() == x && reyes[i]->getY() == y)
 			return true;
-	}
+	
 	for (int i = 0; i < numeroreinas; i++) {
 		if (reinas[i]->getX() == x && reinas[i]->getY() == y)
 			return true;
@@ -882,11 +901,38 @@ bool ListaPiezas::agregar(Peon* p){
 	return true;
 }
 
+bool ListaPiezas::añadir(Pieza* p) {
+	bool iguales = false; 
+	// blancas a la izquierda
+	// negras a la derecha
+	if(p->getColor() == 'b')
+	{
+		p->setX(1);
+		p->setY(1);
+	}
+	else
+	{
+		p->setX(1);
+		p->setY(1);
+	}
+
+	// si no ha sido ya introducida y el vector no está lleno
+	if ((numeropiezas < MAX_PIEZAS))
+	{
+		borradas[numeropiezas] = p; // último puesto sin rellenar 
+		numeropiezas++;
+	}
+	else
+		return false;
+	return true;
+}
+
 void ListaPiezas::eliminar(Rey* k) {
 	for (int j = 0; j < numeroreyes; j++)
 		if (reyes[j] == k)
 		{
-			delete reyes[j];
+			añadir(k);
+			//delete reyes[j];
 			numeroreyes--;
 			for (int i = j; i < numeroreyes; i++)
 				reyes[i] = reyes[i + 1];
@@ -897,7 +943,8 @@ void ListaPiezas::eliminar(Reina* q) {
 	for (int j = 0; j < numeroreinas; j++)
 		if (reinas[j] == q)
 		{
-			delete reinas[j];
+			añadir(q);
+			//delete reinas[j];
 			numeroreinas--;
 			for (int i = j; i < numeroreinas; i++)
 				reinas[i] = reinas[i + 1];
@@ -908,7 +955,8 @@ void ListaPiezas::eliminar(Torre* t) {
 	for (int j = 0; j < numerotorres; j++)
 		if (torres[j] == t)
 		{
-			delete torres[j];
+			añadir(t);
+			//delete torres[j];
 			numerotorres--;
 			for (int i = j; i < numerotorres; i++)
 				torres[i] = torres[i + 1];
@@ -919,7 +967,8 @@ void ListaPiezas::eliminar(Caballo* c) {
 	for (int j = 0; j < numerocaballos; j++)
 		if (caballos[j] == c)
 		{
-			delete caballos[j];
+			añadir(c);
+			//delete caballos[j];
 			numerocaballos--;
 			for (int i = j; i < numerocaballos; i++)
 				caballos[i] = caballos[i + 1];
@@ -930,7 +979,8 @@ void ListaPiezas::eliminar(Alfil* a) {
 	for (int j = 0; j < numeroalfiles; j++)
 		if (alfiles[j] == a)
 		{
-			delete alfiles[j];
+			añadir(a);
+			//delete alfiles[j];
 			numeroalfiles--;
 			for (int i = j; i < numeroalfiles; i++)
 				alfiles[i] = alfiles[i + 1];
@@ -941,7 +991,8 @@ void ListaPiezas::eliminar(Peon* p) {
 	for (int j = 0; j < numeropeones; j++)
 		if (peones[j] == p)
 		{
-			delete peones[j];
+			añadir(p);
+			// delete peones[j];
 			numeropeones--;
 			for (int i = j; i < numeropeones; i++)
 				peones[i] = peones[i + 1];
