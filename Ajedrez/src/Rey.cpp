@@ -7,8 +7,6 @@ Rey::Rey(int x, int y, char c, bool p) {
 	posX = x;
 	posY = y;
 	primermovimiento = p;
-	// 0=rey, 1=reina, 2=alfil, 3=peon, 4=caballo, 5=torre
-	tipo = 0;
 }
 
 bool Rey::comprobar_movimiento(int x, int y){

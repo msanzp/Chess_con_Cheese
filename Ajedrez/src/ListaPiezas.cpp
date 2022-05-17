@@ -12,7 +12,6 @@ ListaPiezas::ListaPiezas(){
 	numerocaballos = 0;
 	numeroalfiles = 0;
 	numeropeones = 0;
-	numeropiezas = 0;
 	for (int i = 0; i < MAX_PIEZAS; i++) {
 		reyes[i] = 0;
 		reinas[i] = 0;
@@ -20,8 +19,18 @@ ListaPiezas::ListaPiezas(){
 		caballos[i] = 0;
 		alfiles[i] = 0;
 		peones[i] = 0;
-		borradas[i] = 0;
 	}
+
+	numeroreinasblancascomidas = 0;
+	numeroreinasnegrascomidas = 0;
+	numerotorresblancascomidas = 0;
+	numerotorresnegrascomidas = 0;
+	numerocaballosblancoscomidos = 0;
+	numerocaballosnegroscomidos = 0;
+	numeroalfilesblancoscomidos = 0;
+	numeroalfilesnegroscomidos = 0;
+	numeropeonesblancoscomidos = 0;
+	numeropeonesnegroscomidos = 0;
 }
 
 ListaPiezas::ListaPiezas(const ListaPiezas& copia) {
@@ -32,7 +41,6 @@ ListaPiezas::ListaPiezas(const ListaPiezas& copia) {
 	numerocaballos = 0;
 	numeroalfiles = 0;
 	numeropeones = 0;
-	numeropiezas = 0;
 	for (int i = 0; i < copia.numeroreyes; i++) {
 		Rey* rey = new Rey(copia.reyes[i]->getX(), copia.reyes[i]->getY(), copia.reyes[i]->getColor(), copia.reyes[i]->getPrimerMovimiento());
 		agregar(rey);
@@ -75,22 +83,67 @@ void ListaPiezas::dibuja2D(int pieza_seleccionadaX, int pieza_seleccionadaY){
 		alfiles[i]->dibuja2D("imagenes/2D/alfilblanco_fondoblanco.png", "imagenes/2D/alfilblanco_fondonegro.png", "imagenes/2D/alfilnegro_fondoblanco.png", "imagenes/2D/alfilnegro_fondonegro.png", "imagenes/2D/alfilblanco_fondoverde.png", "imagenes/2D/alfilnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numeropeones; i++)
 		peones[i]->dibuja2D("imagenes/2D/peonblanco_fondoblanco.png", "imagenes/2D/peonblanco_fondonegro.png", "imagenes/2D/peonnegro_fondoblanco.png", "imagenes/2D/peonnegro_fondonegro.png", "imagenes/2D/peonblanco_fondoverde.png", "imagenes/2D/peonnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
-	dibujaBorradas2D();
+	dibujaBlancasComidas2D("imagenes/2D/reinablanca_fondonegro.png", 10, 3.56, numeroreinasblancascomidas);
+	dibujaBlancasComidas2D("imagenes/2D/torreblanca_fondonegro.png", 10, 2.28, numerotorresblancascomidas);
+	dibujaBlancasComidas2D("imagenes/2D/caballoblanco_fondonegro.png", 10, 1, numerocaballosblancoscomidos);
+	dibujaBlancasComidas2D("imagenes/2D/alfilblanco_fondonegro.png", 12.5, 2.9, numeroalfilesblancoscomidos);
+	dibujaBlancasComidas2D("imagenes/2D/peonblanco_fondonegro.png", 12.5, 1.7, numeropeonesblancoscomidos);
+
+	dibujaBlancasComidas2D("imagenes/2D/reinanegra_fondonegro.png", -4.5, 3.56, numeroreinasnegrascomidas);
+	dibujaBlancasComidas2D("imagenes/2D/torrenegra_fondonegro.png", -4.5, 2.28, numerotorresnegrascomidas);
+	dibujaBlancasComidas2D("imagenes/2D/caballonegro_fondonegro.png", -4.5, 1, numerocaballosnegroscomidos);
+	dibujaBlancasComidas2D("imagenes/2D/alfilnegro_fondonegro.png", -2, 2.9, numeroalfilesnegroscomidos);
+	dibujaBlancasComidas2D("imagenes/2D/peonnegro_fondonegro.png", -2, 1.7, numeropeonesnegroscomidos);
 }
 
-void ListaPiezas::dibujaBorradas2D() 
+void ListaPiezas::dibujaBlancasComidas2D(const char foto[], float coordenadaX, float coordenadaY, int numerocomido)
 {
-	GLfloat posicion_blacas=0;
-	GLfloat posicion_negras=0;
-	
-	for (int i = 0; i < numeropiezas; i++)
-	{
-		borradas[i]->dibuja2D_borrada(posicion_blacas, posicion_negras);
+	// esta función sirve para pintar las piezas que han sido eliminadas
+	// primero pintamos las piezas blancas comidas
+	glEnable(GL_TEXTURE_2D);
 
-		if (borradas[i]->esBlanca()) posicion_blacas++;
-		else if (borradas[i]->esNegra()) posicion_negras++;
-	}
-	
+	// reinas blancas comidas
+	glBindTexture(GL_TEXTURE_2D, getTexture(foto).id);
+	glDisable(GL_LIGHTING);
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2d(0, 1);		glVertex3f(coordenadaX * 4 - 4, coordenadaY * 4 - 4, 0);
+	glTexCoord2d(1, 1);		glVertex3f(coordenadaX * 4, coordenadaY * 4 - 4, 0);
+	glTexCoord2d(1, 0);		glVertex3f(coordenadaX * 4, coordenadaY * 4, 0);
+	glTexCoord2d(0, 0);		glVertex3f(coordenadaX * 4 - 4, coordenadaY * 4, 0);
+	glEnd();
+
+	if(numerocomido == 0)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x0.png").id);
+	if (numerocomido == 1)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x1.png").id);
+	if (numerocomido == 2)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x2.png").id);
+	if (numerocomido == 3)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x3.png").id);
+	if (numerocomido == 4)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x4.png").id);
+	if (numerocomido == 5)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x5.png").id);
+	if (numerocomido == 6)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x6.png").id);
+	if (numerocomido == 7)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x7.png").id);
+	if (numerocomido == 8)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x8.png").id);
+	if (numerocomido == 9)
+		glBindTexture(GL_TEXTURE_2D, getTexture("imagenes/2D/x9.png").id);
+	glDisable(GL_LIGHTING);
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2d(0, 1);		glVertex3f((coordenadaX + 1) * 4 - 4, coordenadaY * 4 - 4, 0);
+	glTexCoord2d(1, 1);		glVertex3f((coordenadaX + 1) * 4, coordenadaY * 4 - 4, 0);
+	glTexCoord2d(1, 0);		glVertex3f((coordenadaX + 1) * 4, coordenadaY * 4, 0);
+	glTexCoord2d(0, 0);		glVertex3f((coordenadaX + 1) * 4 - 4, coordenadaY * 4, 0);
+	glEnd();
+
+	glEnable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
 }
 
 void ListaPiezas::dibuja3D() {
@@ -143,10 +196,10 @@ bool ListaPiezas::comprobar_posicion(int x, int y, int turno){
 
 // esta funcion sirve para determinar si una determinada casilla está ocupada por alguna pieza
 bool ListaPiezas::comprobar_posicion(int x, int y){
-	for (int i = 0; i < numeroreyes; i++) 
+	for (int i = 0; i < numeroreyes; i++) {
 		if (reyes[i]->getX() == x && reyes[i]->getY() == y)
 			return true;
-	
+	}
 	for (int i = 0; i < numeroreinas; i++) {
 		if (reinas[i]->getX() == x && reinas[i]->getY() == y)
 			return true;
@@ -171,7 +224,24 @@ bool ListaPiezas::comprobar_posicion(int x, int y){
 }
 
 // esta función sirve para determinar si podemos mover una pieza de una casilla a otra
-bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x, int destino_y, int turno){
+bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x, int destino_y, int turno, ListaPiezas L){
+	// lo primero que hacemos es comprobar que las posiciones de origen y destino son diferentes
+	if (origen_x == destino_x && origen_y == destino_y)
+		return false;
+
+	// una vez son diferentes, lo primero que invalida cualquier movimiento es el jaque
+	char color = 'w'; // esta variable sirve para saber que color de pieza mueve el jugador del turno
+	if (turno == 1)
+		color = 'b';
+
+	// debido a ser una de las jugadas más raras, vamos a analizar primero el enroque
+	for (int i = 0; i < numeroreyes; i++) {
+		for (int j = 0; j < numerotorres; j++) {
+			if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j])==true)
+				return true;
+		}
+	}
+
 	for (int i = 0; i < numeroreyes; i++) {
 		if (reyes[i]->getX() == origen_x && reyes[i]->getY() == origen_y){
 			// primero comprobamos que la forma de moverse corresponde con la del rey
@@ -195,6 +265,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 				// si la forma de moverse es la adecuada, comprobamos que no hay piezas en medio de la trayectoria y hay piezas de su mismo color en la casilla de destino
 				if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == true)
 					return false;
+				if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
+					ListaPiezas piezas2 = (L);
+					piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+						if (piezas2.getRey(j).getColor() == color) {
+							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								return false;
+							}
+						}
+					}
+				}
 			}
 			else
 				return false;
@@ -208,6 +289,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 				// si la forma de moverse es la adecuada, comprobamos que no hay piezas en medio de la trayectoria y hay piezas de su mismo color en la casilla de destino
 				if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == true)
 					return false;
+				if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
+					ListaPiezas piezas2 = (L);
+					piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+						if (piezas2.getRey(j).getColor() == color) {
+							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								return false;
+							}
+						}
+					}
+				}
 			}
 			else
 				return false;
@@ -221,6 +313,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 				// si la forma de moverse es la adecuada, comprobamos que no hay piezas de su mismo color en la casilla de destino
 				if (comprobar_posicion(destino_x, destino_y, turno) == true)
 					return false;
+				else {
+					ListaPiezas piezas2 = (L);
+					piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+						if (piezas2.getRey(j).getColor() == color) {
+							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								return false;
+							}
+						}
+					}
+				}
 			}
 			else
 				return false;
@@ -234,6 +337,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 				// si la forma de moverse es la adecuada, comprobamos que no hay piezas en medio de la trayectoria y hay piezas de su mismo color en la casilla de destino
 				if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == true)
 					return false;
+				if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
+					ListaPiezas piezas2 = (L);
+					piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+						if (piezas2.getRey(j).getColor() == color) {
+							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								return false;
+							}
+						}
+					}
+				}
 			}
 			else
 				return false;
@@ -248,17 +362,30 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 			else
 				variaciony = origen_y - destino_y;
 
-			int turno1; // esta variable sirve para comer en diagonal una pieza del otro jugador
+			int turno1 = 0; // esta variable sirve para comer en diagonal una pieza del otro jugador
 			if (turno == 0)
 				turno1 = 1;
-			else
-				turno1 = 0;
+
+			// lo primero que vamos a comprobar en el peon es que no coma hacia adelante
+			if (origen_x == destino_x && comprobar_posicion(destino_x, destino_y) == true)
+				return false;
 
 			// si se mueve hacia adelante
 			if (origen_x == destino_x) {
 				if (peones[i]->comprobar_movimiento(destino_x, destino_y) == true) {
 					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno1) == true)
 						return false;
+					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
+						ListaPiezas piezas2 = (L);
+						piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+						for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+							if (piezas2.getRey(j).getColor() == color) {
+								if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+									return false;
+								}
+							}
+						}
+					}
 				}
 				else
 					return false;
@@ -267,11 +394,35 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 			// si se mueve de lado para comer
 			else if (fabs(origen_x - destino_x) == 1) {
 				// en primer lugar ejecutamos el movimiento normal de comer en diagonal
-				if (variaciony == 1 && comprobar_posicion(destino_x, destino_y, turno1) == true)
+				if (variaciony == 1 && comprobar_posicion(destino_x, destino_y, turno1) == true) {
+					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
+						ListaPiezas piezas2 = (L);
+						piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+						for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+							if (piezas2.getRey(j).getColor() == color) {
+								if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+									return false;
+								}
+							}
+						}
+					}
 					return true;
+				}
 				// tras ello, ejecutamos la jugada de "comer al paso"
-				else if (comprobar_comeralpaso(origen_x, origen_y, destino_x, destino_y, turno, *peones[i]) == true)
+				else if (comprobar_comeralpaso(origen_x, origen_y, destino_x, destino_y, turno, *peones[i]) == true) {
+					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
+						ListaPiezas piezas2 = (L);
+						piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+						for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+							if (piezas2.getRey(j).getColor() == color) {
+								if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+									return false;
+								}
+							}
+						}
+					}
 					return true;
+				}
 				else
 					return false;
 			}
@@ -340,9 +491,68 @@ bool ListaPiezas::comprobar_trayectoria(int origen_x, int origen_y, int destino_
 
 // esta función sirve para ejecutar el movimiento, eliminando la pieza comica (si hay) y moviendo la pieza seleccionada
 void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, int destino_y, int turno) {
+	// lo primero que ejecutamos son los posibles enroques
+	if (origen_x == 5 && origen_y == 1 && destino_x == 7 && destino_y == 1) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true){
+					reyes[i]->setX(7);
+					reyes[i]->setY(1);
+					torres[j]->setX(6);
+					torres[j]->setY(1);
+					return;
+				}
+			}
+		}
+	}
+	if (origen_x == 5 && origen_y == 1 && destino_x == 3 && destino_y == 1) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					reyes[i]->setX(3);
+					reyes[i]->setY(1);
+					torres[j]->setX(4);
+					torres[j]->setY(1);
+					return;
+				}
+			}
+		}
+	}
+	if (origen_x == 5 && origen_y == 8 && destino_x == 7 && destino_y == 8) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					reyes[i]->setX(7);
+					reyes[i]->setY(8);
+					torres[j]->setX(6);
+					torres[j]->setY(8);
+					return;
+				}
+			}
+		}
+	}
+	if (origen_x == 5 && origen_y == 8 && destino_x == 3 && destino_y == 8) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					reyes[i]->setX(3);
+					reyes[i]->setY(8);
+					torres[j]->setX(4);
+					torres[j]->setY(8);
+					return;
+				}
+			}
+		}
+	}
+
+	// para que no tocas las piezas puedan comer al paso, comprobamos que sea un peon la pieza que se encuentra en la casilla de origen
+	bool comer_paso = false;
+	for (int i = 0; i < numeropeones; i++) {
+		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y)
+			comer_paso = true;
+	}
+
 	for (int i = 0; i < numeroreyes; i++) {
-		if (reyes[i]->getX() == destino_x && reyes[i]->getY() == destino_y)
-			eliminar(reyes[i]);
 		if (reyes[i]->getX() == origen_x && reyes[i]->getY() == origen_y) {
 			reyes[i]->setX(destino_x);
 			reyes[i]->setY(destino_y);
@@ -392,49 +602,46 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 
 		if (peones[i]->getX() == destino_x && peones[i]->getY() == destino_y)
 			eliminar(peones[i]);
-		
+		if (comer_paso == true && peones[i]->getX() == destino_x && peones[i]->getY() == origen_y && peones[i]->getColor() == color && peones[i]->getJugadaPrimerMovimiento() == numero_jugadas - 1)
+			eliminar(peones[i]);
 		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
-			for (int j = 0; j < numeropeones; j++) {
-				if (peones[j]->getX() == destino_x && peones[j]->getY() == origen_y && peones[j]->getColor() == color && peones[j]->getJugadaPrimerMovimiento() == numero_jugadas - 1)
-					eliminar(peones[j]);
-			}
 			peones[i]->setX(destino_x);
 			peones[i]->setY(destino_y);
 			if(peones[i]->getPrimerMovimiento() == true && fabs(destino_y - origen_y) == 2)
 				peones[i]->setJugadaPrimerMovimiento(numero_jugadas);
 			peones[i]->setPrimerMovimiento();
-		}
-
-		// usa vez he cambiado la posicion del peón, compruebo si puede coronar
-		if ((peones[i]->getY() == 8 && peones[i]->getColor() == 'w') || (peones[i]->getY() == 1 && peones[i]->getColor() == 'b'))
-		{
-			int opcion, posX = peones[i]->getX(), posY = peones[i]->getY();
-			char color = peones[i]->getColor();
-			cout << "El peon puede coronar. Seleccione una opcion:" << endl; 
-			cout << "1: Coronar en torre" << endl;
-			cout << "2: Coronar en caballo" << endl;
-			cout << "3: Coronar en alfil" << endl;
-			cout << "4: Coronar en reina" << endl;
-			cin >> opcion;
-			if (opcion == 1) {
-				eliminar(peones[i]);
-				Torre* torre = new Torre(posX, posY, color, false);
-				agregar(torre);
-			}
-			if (opcion == 2) {
-				eliminar(peones[i]);
-				Caballo* caballo = new Caballo(posX, posY, color);
-				agregar(caballo);
-			}
-			if (opcion == 3) {
-				eliminar(peones[i]);
-				Alfil* alfil = new Alfil(posX, posY, color);
-				agregar(alfil);
-			}
-			if (opcion == 4) {
-				eliminar(peones[i]);
-				Reina* reina = new Reina(posX, posY, color);
-				agregar(reina);
+			// usa vez he cambiado la posicion del peón, compruebo si puede coronar
+			if ((peones[i]->getY() == 8 && peones[i]->getColor() == 'w') || (peones[i]->getY() == 1 && peones[i]->getColor() == 'b'))
+			{
+				int opcion, posX = peones[i]->getX(), posY = peones[i]->getY();
+				char color = peones[i]->getColor();
+				cout << "El peon puede coronar. Seleccione una opcion:" << endl;
+				cout << "1: Coronar en torre" << endl;
+				cout << "2: Coronar en caballo" << endl;
+				cout << "3: Coronar en alfil" << endl;
+				cout << "4: Coronar en reina" << endl;
+				cin >> opcion;
+				if (opcion == 1) {
+					eliminar(peones[i]);
+					Torre* torre = new Torre(posX, posY, color, false);
+					agregar(torre);
+				}
+				if (opcion == 2) {
+					eliminar(peones[i]);
+					Caballo* caballo = new Caballo(posX, posY, color);
+					agregar(caballo);
+				}
+				if (opcion == 3) {
+					eliminar(peones[i]);
+					Alfil* alfil = new Alfil(posX, posY, color);
+					agregar(alfil);
+				}
+				if (opcion == 4) {
+					eliminar(peones[i]);
+					Reina* reina = new Reina(posX, posY, color);
+					agregar(reina);
+				}
+				return;
 			}
 		}
 	}
@@ -442,9 +649,67 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 }
 
 void ListaPiezas::ejecuta_movimientocopia(int origen_x, int origen_y, int destino_x, int destino_y, int turno) {
+	// lo primero que ejecutamos son los posibles enroques
+	if (origen_x == 5 && origen_y == 1 && destino_x == 7 && destino_y == 1) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					reyes[i]->setX(7);
+					reyes[i]->setY(1);
+					torres[j]->setX(6);
+					torres[j]->setY(1);
+					return;
+				}
+			}
+		}
+	}
+	if (origen_x == 5 && origen_y == 1 && destino_x == 3 && destino_y == 1) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					reyes[i]->setX(3);
+					reyes[i]->setY(1);
+					torres[j]->setX(4);
+					torres[j]->setY(1);
+					return;
+				}
+			}
+		}
+	}
+	if (origen_x == 5 && origen_y == 8 && destino_x == 7 && destino_y == 8) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					reyes[i]->setX(7);
+					reyes[i]->setY(8);
+					torres[j]->setX(6);
+					torres[j]->setY(8);
+					return;
+				}
+			}
+		}
+	}
+	if (origen_x == 5 && origen_y == 8 && destino_x == 3 && destino_y == 8) {
+		for (int i = 0; i < numeroreyes; i++) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					reyes[i]->setX(3);
+					reyes[i]->setY(8);
+					torres[j]->setX(4);
+					torres[j]->setY(8);
+					return;
+				}
+			}
+		}
+	}
+
+	// para que no tocas las piezas puedan comer al paso, comprobamos que sea un peon la pieza que se encuentra en la casilla de origen
+	bool comer_paso = false;
+	for (int i = 0; i < numeropeones; i++) {
+		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y)
+			comer_paso = true;
+	}
 	for (int i = 0; i < numeroreyes; i++) {
-		if (reyes[i]->getX() == destino_x && reyes[i]->getY() == destino_y)
-			eliminar(reyes[i]);
 		if (reyes[i]->getX() == origen_x && reyes[i]->getY() == origen_y) {
 			reyes[i]->setX(destino_x);
 			reyes[i]->setY(destino_y);
@@ -493,7 +758,7 @@ void ListaPiezas::ejecuta_movimientocopia(int origen_x, int origen_y, int destin
 
 		if (peones[i]->getX() == destino_x && peones[i]->getY() == destino_y)
 			eliminar(peones[i]);
-		if (peones[i]->getX() == destino_x && peones[i]->getY() == origen_y && peones[i]->getColor() == color && peones[i]->getJugadaPrimerMovimiento() == numero_jugadas - 1)
+		if (comer_paso == true && peones[i]->getX() == destino_x && peones[i]->getY() == origen_y && peones[i]->getColor() == color && peones[i]->getJugadaPrimerMovimiento() == numero_jugadas - 1)
 			eliminar(peones[i]);
 		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
 			peones[i]->setX(destino_x);
@@ -506,7 +771,7 @@ void ListaPiezas::ejecuta_movimientocopia(int origen_x, int origen_y, int destin
 		// usa vez he cambiado la posicion del peón, compruebo si puede coronar
 		if ((peones[i]->getY() == 8 && peones[i]->getColor() == 'w') || (peones[i]->getY() == 1 && peones[i]->getColor() == 'b'))
 		{
-			int opcion, posX = peones[i]->getX(), posY = peones[i]->getY();
+			int posX = peones[i]->getX(), posY = peones[i]->getY();
 			char color = peones[i]->getColor();
 			eliminar(peones[i]);
 			Reina* reina = new Reina(posX, posY, color);
@@ -518,28 +783,30 @@ void ListaPiezas::ejecuta_movimientocopia(int origen_x, int origen_y, int destin
 
 // esta funcion sirve para determinar si una determinada posición está amenazada
 bool ListaPiezas::comprobar_jaque(int x, int y, int turno) {
-	char color = 'w'; // esta variable porque solamente pueden hacer jaque al rey las piezas del otro color
-	if (turno == 0)
+	int turnocontrario = 0;
+	char color = 'w'; // solamente pueden hacer jaque al rey las piezas del otro color
+	if (turno == 0) {
 		color = 'b';
-
+		turnocontrario = 1;
+	}
 	for (int i = 0; i < numeroreyes; i++) {
-		if (reyes[i]->getColor() == color && reyes[i]->comprobar_movimiento(x, y) == true)
+		if (reyes[i]->getColor() == color && reyes[i]->comprobar_movimiento(x, y) == true && comprobar_trayectoria(reinas[i]->getX(), reinas[i]->getY(), x, y, turnocontrario) == false)
 			return true; // si el rey contrario se puede mover hacia donde esta el nuestro vamos a estar en jaque
 	}
 	for (int i = 0; i < numeroreinas; i++) {
-		if (reinas[i]->getColor() == color && reinas[i]->comprobar_movimiento(x, y) == true && comprobar_trayectoria(reinas[i]->getX(), reinas[i]->getY(), x, y, turno) == false)
-			return true; // si una reina contraria se puede mover hacia donde esta nuestro rey vamos a estar en jaque
+		if (reinas[i]->getColor() == color && reinas[i]->comprobar_movimiento(x, y) == true && comprobar_trayectoria(reinas[i]->getX(), reinas[i]->getY(), x, y, turnocontrario) == false)
+			return true;
 	}
-	for (int i = 0; i < numerotorres; i++){
-		if (torres[i]->getColor() == color && torres[i]->comprobar_movimiento(x, y) == true && comprobar_trayectoria(torres[i]->getX(), torres[i]->getY(), x, y, turno) == false)
+	for (int i = 0; i < numerotorres; i++) {
+		if (torres[i]->getColor() == color && torres[i]->comprobar_movimiento(x, y) == true && comprobar_trayectoria(torres[i]->getX(), torres[i]->getY(), x, y, turnocontrario) == false)
 			return true; // si una torre contraria se puede mover hacia donde esta nuestro rey vamos a estar en jaque
 	}
 	for (int i = 0; i < numerocaballos; i++) {
-		if (caballos[i]->getColor() == color && caballos[i]->comprobar_movimiento(x, y))
+		if (caballos[i]->getColor() == color && caballos[i]->comprobar_movimiento(x, y) == true && comprobar_posicion(x, y, turnocontrario) == false)
 			return true; // si un caballo contrario se puede mover hacia donde esta nuestro rey vamos a estar en jaque
 	}
 	for (int i = 0; i < numeroalfiles; i++) {
-		if (alfiles[i]->getColor() == color && alfiles[i]->comprobar_movimiento(x, y) == true && comprobar_trayectoria(alfiles[i]->getX(), alfiles[i]->getY(), x, y, turno) == false)
+		if (alfiles[i]->getColor() == color && alfiles[i]->comprobar_movimiento(x, y) == true && comprobar_trayectoria(alfiles[i]->getX(), alfiles[i]->getY(), x, y, turnocontrario) == false)
 			return true; // si un alfil contraria se puede mover hacia donde esta nuestro rey vamos a estar en jaque
 	}
 	for (int i = 0; i < numeropeones; i++) {
@@ -557,28 +824,6 @@ bool ListaPiezas::comprobar_jaque(int x, int y, int turno) {
 	return false;
 }
 
-bool ListaPiezas::comprobar_jaque2(int x, int y, int turno) {
-	char color = 'w'; // esta variable porque solamente pueden hacer jaque al rey las piezas del otro color
-	int turnocontrario = 1; // esta variable nos va a servir para determinar si estamos o no en jaque
-	bool jaque = false;
-	if (turno == 1) {
-		color = 'b';
-		turnocontrario = 0;
-	}
-
-	for (int i = 0; i < numeroreyes; i++) {
-		if (reyes[i]->getColor() == color) {
-			for (int j = 1; j < 9; j++) {
-				for (int h = 1; h < 9; h++) {
-					if (comprobar_posicion(j, h, turnocontrario) == true && comprobar_movimiento(j, h, x, y, turnocontrario) == true)
-						jaque = true;
-				}
-			}
-		}
-	}
-	return jaque;
-}
-
 bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 	char color = 'w'; // esta variable porque solamente pueden hacer jaque al rey las piezas del otro color
 	int posreyX, posreyY; // estas variables me sirven para guardar cual es la posicion del rey;
@@ -590,7 +835,7 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 		if (reyes[i]->getColor() == color) {
 			posreyX = reyes[i]->getX();
 			posreyY = reyes[i]->getY();
-			if (comprobar_jaque2(posreyX, posreyY, turno) == false)// Si en la situacion actual no existe jaque, no puede ser jaque mate
+			if (comprobar_jaque(posreyX, posreyY, turno) == false)// Si en la situacion actual no existe jaque, no puede ser jaque mate
 				return false;
 		}
 	}
@@ -600,12 +845,12 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 		if (reyes[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(reyes[i]->getX(), reyes[i]->getY(), j, h, turno) == true) {
+					if (comprobar_movimiento(reyes[i]->getX(), reyes[i]->getY(), j, h, turno, L) == true) {
 						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimiento(reyes[i]->getX(), reyes[i]->getY(), j, h, turno);
+						piezas2.ejecuta_movimientocopia(reyes[i]->getX(), reyes[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroReyes(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getRey(i).getColor() == color) {
-								if (piezas2.comprobar_jaque2(j, h, turno) == false) {
+								if (piezas2.comprobar_jaque(j, h, turno) == false) {
 									return false;
 								}
 							}
@@ -619,12 +864,12 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 		if (reinas[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(reinas[i]->getX(), reinas[i]->getY(), j, h, turno) == true) {
+					if (comprobar_movimiento(reinas[i]->getX(), reinas[i]->getY(), j, h, turno, L) == true) {
 						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimiento(reinas[i]->getX(), reinas[i]->getY(), j, h, turno);
+						piezas2.ejecuta_movimientocopia(reinas[i]->getX(), reinas[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroReinas(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getReina(i).getColor() == color) {
-								if (piezas2.comprobar_jaque2(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
 									return false;
 							}
 						}
@@ -637,12 +882,12 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 		if (torres[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(torres[i]->getX(), torres[i]->getY(), j, h, turno) == true) {
+					if (comprobar_movimiento(torres[i]->getX(), torres[i]->getY(), j, h, turno, L) == true) {
 						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimiento(torres[i]->getX(), torres[i]->getY(), j, h, turno);
+						piezas2.ejecuta_movimientocopia(torres[i]->getX(), torres[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroTorres(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getTorre(i).getColor() == color) {
-								if (piezas2.comprobar_jaque2(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
 									return false;
 							}
 						}
@@ -655,12 +900,12 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 		if (caballos[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(caballos[i]->getX(), caballos[i]->getY(), j, h, turno) == true) {
+					if (comprobar_movimiento(caballos[i]->getX(), caballos[i]->getY(), j, h, turno, L) == true) {
 						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimiento(caballos[i]->getX(), caballos[i]->getY(), j, h, turno);
+						piezas2.ejecuta_movimientocopia(caballos[i]->getX(), caballos[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroCaballos(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getCaballo(i).getColor() == color) {
-								if (piezas2.comprobar_jaque2(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
 									return false;
 							}
 						}
@@ -673,12 +918,12 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 		if (alfiles[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(alfiles[i]->getX(), alfiles[i]->getY(), j, h, turno) == true) {
+					if (comprobar_movimiento(alfiles[i]->getX(), alfiles[i]->getY(), j, h, turno, L) == true) {
 						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimiento(alfiles[i]->getX(), alfiles[i]->getY(), j, h, turno);
+						piezas2.ejecuta_movimientocopia(alfiles[i]->getX(), alfiles[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroAlfiles(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getAlfil(i).getColor() == color) {
-								if (piezas2.comprobar_jaque2(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
 									return false;
 							}
 						}
@@ -691,12 +936,12 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 		if (peones[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(peones[i]->getX(), peones[i]->getY(), j, h, turno) == true) {
+					if (comprobar_movimiento(peones[i]->getX(), peones[i]->getY(), j, h, turno, L) == true) {
 						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimiento(peones[i]->getX(), peones[i]->getY(), j, h, turno);
+						piezas2.ejecuta_movimientocopia(peones[i]->getX(), peones[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroPeones(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getPeon(i).getColor() == color)
-								if (piezas2.comprobar_jaque2(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
 									return false;
 						}
 					}
@@ -707,9 +952,9 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 	return true;
 }
 
-bool ListaPiezas::comprobar_ahogado(int turno) {
-	char color = 'w'; // esta variable porque solamente pueden hacer jaque al rey las piezas del otro color
-	int posreyX, posreyY; // estas variables me sirven para guardar cual es la posicion del rey;
+bool ListaPiezas::comprobar_ahogado(int turno, ListaPiezas L) {
+	char color = 'w';
+	int posreyX, posreyY; // estas variables me sirven para guardar cual es la posicion del rey
 	if (turno == 1)
 		color = 'b';
 
@@ -718,7 +963,7 @@ bool ListaPiezas::comprobar_ahogado(int turno) {
 		if (reyes[i]->getColor() == color) {
 			posreyX = reyes[i]->getX();
 			posreyY = reyes[i]->getY();
-			if (comprobar_jaque2(posreyX, posreyY, turno) == true)// Si en la situacion actual no existe jaque, no puede ser jaque mate
+			if (comprobar_jaque(posreyX, posreyY, turno) == true)// Si en la situacion actual no existe jaque, no puede ser jaque mate
 				return false;
 		}
 	}
@@ -728,7 +973,7 @@ bool ListaPiezas::comprobar_ahogado(int turno) {
 		if (reyes[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(reyes[i]->getX(), reyes[i]->getY(), j, h, turno) == true)
+					if (comprobar_movimiento(reyes[i]->getX(), reyes[i]->getY(), j, h, turno, L) == true)
 						return false;
 				}
 			}
@@ -738,7 +983,7 @@ bool ListaPiezas::comprobar_ahogado(int turno) {
 		if (reinas[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(reinas[i]->getX(), reinas[i]->getY(), j, h, turno) == true)
+					if (comprobar_movimiento(reinas[i]->getX(), reinas[i]->getY(), j, h, turno, L) == true)
 						return false;
 				}
 			}
@@ -748,7 +993,7 @@ bool ListaPiezas::comprobar_ahogado(int turno) {
 		if (torres[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(torres[i]->getX(), torres[i]->getY(), j, h, turno) == true)
+					if (comprobar_movimiento(torres[i]->getX(), torres[i]->getY(), j, h, turno, L) == true)
 						return false;
 				}
 			}
@@ -758,7 +1003,7 @@ bool ListaPiezas::comprobar_ahogado(int turno) {
 		if (caballos[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(caballos[i]->getX(), caballos[i]->getY(), j, h, turno) == true)
+					if (comprobar_movimiento(caballos[i]->getX(), caballos[i]->getY(), j, h, turno, L) == true)
 						return false;
 				}
 			}
@@ -768,7 +1013,7 @@ bool ListaPiezas::comprobar_ahogado(int turno) {
 		if (alfiles[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(alfiles[i]->getX(), alfiles[i]->getY(), j, h, turno) == true)
+					if (comprobar_movimiento(alfiles[i]->getX(), alfiles[i]->getY(), j, h, turno, L) == true)
 						return false;
 				}
 			}
@@ -778,7 +1023,7 @@ bool ListaPiezas::comprobar_ahogado(int turno) {
 		if (peones[i]->getColor() == color) {
 			for (int j = 1; j < 9; j++) {
 				for (int h = 1; h < 9; h++) {
-					if (comprobar_movimiento(peones[i]->getX(), peones[i]->getY(), j, h, turno) == true)
+					if (comprobar_movimiento(peones[i]->getX(), peones[i]->getY(), j, h, turno, L) == true)
 						return false;
 				}
 			}
@@ -807,7 +1052,52 @@ bool ListaPiezas::comprobar_comeralpaso(int origen_x, int origen_y, int destino_
 	}
 }
 
-bool ListaPiezas::comprobar_enroque() {
+// el enroque se realiza seleccionando el rey
+bool ListaPiezas::comprobar_enroque(int origen_x, int origen_y, int destino_x, int destino_y, int turno, Rey* k, Torre* t) {
+	if (origen_x == 5 && origen_y == 1) { // comprobamos los enroques del rey blanco
+		if (k->getPrimerMovimiento() == true && k->getX() == origen_x && k->getY() == origen_y && t->getPrimerMovimiento() == true) {
+			// comprobamos el enroque corto
+			if (t->getX() == 8 && t->getY() == 1) {
+				if (comprobar_posicion(6, 1) == false && comprobar_posicion(7, 1) == false) {
+					if (comprobar_jaque(5, 1, turno) == false && comprobar_jaque(6, 1, turno) == false && comprobar_jaque(7, 1, turno) == false) {
+						if (destino_x == 7 && destino_y == 1)
+							return true;
+					}
+				}
+			}
+			// comprobamos el enroque largo
+			if (t->getX() == 1 && t->getY() == 1) {
+				if (comprobar_posicion(2, 1) == false && comprobar_posicion(3, 1) == false && comprobar_posicion(4, 1) == false) {
+					if (comprobar_jaque(3, 1, turno) == false && comprobar_jaque(4, 1, turno) == false && comprobar_jaque(5, 1, turno) == false) {
+						if (destino_x == 3 && destino_y == 1)
+							return true;
+					}
+				}
+			}
+		}
+	}
+	if (origen_x == 5 && origen_y == 8) { // comprobamos los enroques del rey negro
+		if (k->getPrimerMovimiento() == true && k->getX() == origen_x && k->getY() == origen_y && t->getPrimerMovimiento() == true) {
+			// comprobamos el enroque corto
+			if (t->getX() == 8 && t->getY() == 8) {
+				if (comprobar_posicion(6, 8) == false && comprobar_posicion(7, 8) == false) {
+					if (comprobar_jaque(5, 8, turno) == false && comprobar_jaque(6, 8, turno) == false && comprobar_jaque(7, 8, turno) == false) {
+						if (destino_x == 7 && destino_y == 8)
+							return true;
+					}
+				}
+			}
+			// comprobamos el enroque largo
+			if (t->getX() == 1 && t->getY() == 8) {
+				if (comprobar_posicion(2, 8) == false && comprobar_posicion(3, 8) == false && comprobar_posicion(4, 8) == false) {
+					if (comprobar_jaque(3, 8, turno) == false && comprobar_jaque(4, 8, turno) == false && comprobar_jaque(5, 8, turno) == false) {
+						if (destino_x == 3 && destino_y == 8)
+							return true;
+					}
+				}
+			}
+		}
+	}
 	return false;
 }
 
@@ -835,7 +1125,7 @@ bool ListaPiezas::agregar(Reina* q){
 	}
 	// si no ha sido ya introducida y el vector no está lleno
 	if ((numeroreinas < MAX_PIEZAS) && (iguales == false))
-		reinas[numeroreinas++] = q; // último puesto sin rellenar 
+		reinas[numeroreinas++] = q; // último puesto sin rellenar
 	else
 		return false;
 	return true;
@@ -901,50 +1191,15 @@ bool ListaPiezas::agregar(Peon* p){
 	return true;
 }
 
-bool ListaPiezas::añadir(Pieza* p) {
-	bool iguales = false; 
-	// blancas a la izquierda
-	// negras a la derecha
-	if(p->getColor() == 'b')
-	{
-		p->setX(1);
-		p->setY(1);
-	}
-	else
-	{
-		p->setX(1);
-		p->setY(1);
-	}
-
-	// si no ha sido ya introducida y el vector no está lleno
-	if ((numeropiezas < MAX_PIEZAS))
-	{
-		borradas[numeropiezas] = p; // último puesto sin rellenar 
-		numeropiezas++;
-	}
-	else
-		return false;
-	return true;
-}
-
-void ListaPiezas::eliminar(Rey* k) {
-	for (int j = 0; j < numeroreyes; j++)
-		if (reyes[j] == k)
-		{
-			añadir(k);
-			//delete reyes[j];
-			numeroreyes--;
-			for (int i = j; i < numeroreyes; i++)
-				reyes[i] = reyes[i + 1];
-		}
-}
-
 void ListaPiezas::eliminar(Reina* q) {
 	for (int j = 0; j < numeroreinas; j++)
 		if (reinas[j] == q)
 		{
-			añadir(q);
-			//delete reinas[j];
+			if (reinas[j]->getColor() == 'w')
+				numeroreinasblancascomidas++;
+			if (reinas[j]->getColor() == 'b')
+				numeroreinasnegrascomidas++;
+			delete reinas[j];
 			numeroreinas--;
 			for (int i = j; i < numeroreinas; i++)
 				reinas[i] = reinas[i + 1];
@@ -955,8 +1210,11 @@ void ListaPiezas::eliminar(Torre* t) {
 	for (int j = 0; j < numerotorres; j++)
 		if (torres[j] == t)
 		{
-			añadir(t);
-			//delete torres[j];
+			if (torres[j]->getColor() == 'w')
+				numerotorresblancascomidas++;
+			if (torres[j]->getColor() == 'b')
+				numerotorresnegrascomidas++;
+			delete torres[j];
 			numerotorres--;
 			for (int i = j; i < numerotorres; i++)
 				torres[i] = torres[i + 1];
@@ -967,8 +1225,11 @@ void ListaPiezas::eliminar(Caballo* c) {
 	for (int j = 0; j < numerocaballos; j++)
 		if (caballos[j] == c)
 		{
-			añadir(c);
-			//delete caballos[j];
+			if (caballos[j]->getColor() == 'w')
+				numerocaballosblancoscomidos++;
+			if (caballos[j]->getColor() == 'b')
+				numerocaballosnegroscomidos++;
+			delete caballos[j];
 			numerocaballos--;
 			for (int i = j; i < numerocaballos; i++)
 				caballos[i] = caballos[i + 1];
@@ -979,8 +1240,11 @@ void ListaPiezas::eliminar(Alfil* a) {
 	for (int j = 0; j < numeroalfiles; j++)
 		if (alfiles[j] == a)
 		{
-			añadir(a);
-			//delete alfiles[j];
+			if (alfiles[j]->getColor() == 'w')
+				numeroalfilesblancoscomidos++;
+			if (alfiles[j]->getColor() == 'b')
+				numeroalfilesnegroscomidos++;
+			delete alfiles[j];
 			numeroalfiles--;
 			for (int i = j; i < numeroalfiles; i++)
 				alfiles[i] = alfiles[i + 1];
@@ -991,8 +1255,11 @@ void ListaPiezas::eliminar(Peon* p) {
 	for (int j = 0; j < numeropeones; j++)
 		if (peones[j] == p)
 		{
-			añadir(p);
-			// delete peones[j];
+			if (peones[j]->getColor() == 'w')
+				numeropeonesblancoscomidos++;
+			if (peones[j]->getColor() == 'b')
+				numeropeonesnegroscomidos++;
+			delete peones[j];
 			numeropeones--;
 			for (int i = j; i < numeropeones; i++)
 				peones[i] = peones[i + 1];
@@ -1002,15 +1269,15 @@ void ListaPiezas::eliminar(Peon* p) {
 void ListaPiezas::destruirContenido() {
 	for (int i = 0; i < numeroreyes; i++) // destrucción de reyess 
 		delete reyes[i];
-	for (int i = 0; i < numeroreyes; i++) // destrucción de reinas
+	for (int i = 0; i < numeroreinas; i++) // destrucción de reinas
 		delete reinas[i];
-	for (int i = 0; i < numeroreyes; i++) // destrucción de torres
+	for (int i = 0; i < numerotorres; i++) // destrucción de torres
 		delete torres[i];
-	for (int i = 0; i < numeroreyes; i++) // destrucción de caballos
+	for (int i = 0; i < numerocaballos; i++) // destrucción de caballos
 		delete caballos[i];
-	for (int i = 0; i < numeroreyes; i++) // destrucción de alfiles
+	for (int i = 0; i < numeroalfiles; i++) // destrucción de alfiles
 		delete alfiles[i];
-	for (int i = 0; i < numeroreyes; i++) // destrucción de peones
+	for (int i = 0; i < numeropeones; i++) // destrucción de peones
 		delete peones[i];
 	numeroreyes = 0; // inicializa lista 
 	numeroreinas = 0; // inicializa lista
@@ -1018,4 +1285,14 @@ void ListaPiezas::destruirContenido() {
 	numerocaballos = 0; // inicializa lista
 	numeroalfiles = 0; // inicializa lista
 	numeropeones = 0; // inicializa lista
+	numeroreinasblancascomidas = 0; // inicializa lista
+	numeroreinasnegrascomidas = 0; // inicializa lista
+	numerotorresblancascomidas = 0; // inicializa lista
+	numerotorresnegrascomidas = 0; // inicializa lista
+	numerocaballosblancoscomidos = 0; // inicializa lista
+	numerocaballosnegroscomidos = 0; // inicializa lista
+	numeroalfilesblancoscomidos = 0; // inicializa lista
+	numeroalfilesnegroscomidos = 0; // inicializa lista
+	numeropeonesblancoscomidos = 0; // inicializa lista
+	numeropeonesnegroscomidos = 0; // inicializa lista
 }

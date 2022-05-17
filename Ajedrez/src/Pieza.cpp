@@ -1,109 +1,5 @@
 #include "Pieza.h"
 
-int Pieza::esNegra()
-{
-	return (color == 'b');
-}
-
-int Pieza::esBlanca()
-{
-	return (color == 'w');
-}
-
-int Pieza::esRey()
-{
-	if (tipo == 0)
-		return 1;
-	else 
-		return 0;
-}
-
-int Pieza::esReina()
-{
-	if (tipo == 1)
-		return 1;
-	else
-		return 0;
-}
-
-int Pieza::esAlfil()
-{
-	if (tipo == 2)
-		return 1;
-	else
-		return 0;
-}
-
-int Pieza::esPeon()
-{
-	if (tipo == 3)
-		return 1;
-	else
-		return 0;
-}
-
-int Pieza::esCaballo()
-{
-	if (tipo == 4)
-		return 1;
-	else
-		return 0;
-}
-
-int Pieza::esTorre()
-{
-	if (tipo == 5)
-		return 1;
-	else
-		return 0;
-}
-
-void Pieza::dibuja2D_borrada(GLfloat posicion_blacas, GLfloat posicion_negras)
-{
-	GLfloat pos_inicial_x;
-	GLfloat posicion = posicion_blacas;		// 0: la primera, 1: la segunda, 2: la tercera...
-	GLfloat pos_inicial_y = 0;	// altura de pintado inicial	
-	GLfloat tam = 2;
-		
-	if (esBlanca())
-	{
-		pos_inicial_x = -4;
-		posicion = posicion_blacas;
-		if (esPeon())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonblanco_fondoblanco.png").id);
-		if (esAlfil())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/alfilblanco_fondoblanco.png").id);
-		if (esCaballo())	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/caballoblanco_fondoblanco.png").id);
-		if (esTorre())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/torreblanca_fondoblanco.png").id);
-		if (esReina())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/reinablanca_fondoblanco.png").id);
-		if (esRey())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/reyblanco_fondoblanco.png").id);
-
-	}
-	else
-	{
-		pos_inicial_x = 34;
-		posicion = posicion_negras;
-		if (esPeon())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonnegro_fondoblanco.png").id);
-		if (esAlfil())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/alfilnegro_fondoblanco.png").id);
-		if (esCaballo())	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/caballonegro_fondoblanco.png").id);
-		if (esTorre())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/torrenegra_fondoblanco.png").id);
-		if (esReina())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/reinanegra_fondoblanco.png").id);
-		if (esRey())		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/reynegro_fondoblanco.png").id);
-	}
-		
-	glEnable(GL_TEXTURE_2D);
-	posicion = (pos_inicial_y + posicion) * tam;
-
-	glDisable(GL_LIGHTING);
-	glBegin(GL_POLYGON);
-	glColor3f(1, 1, 1);
-	glTexCoord2d(0, 1);		glVertex3f(pos_inicial_x		, posicion		, 0);
-	glTexCoord2d(1, 1);		glVertex3f(pos_inicial_x + tam	, posicion		, 0);
-	glTexCoord2d(1, 0);		glVertex3f(pos_inicial_x + tam	, posicion + tam, 0);
-	glTexCoord2d(0, 0);		glVertex3f(pos_inicial_x		, posicion + tam, 0);
-	glEnd();
-	glEnable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
-}
-
 void Pieza::dibuja2D(const char foto1[], const char foto2[], const char foto3[], const char foto4[], const char foto5[], const char foto6[], int pieza_seleccionadaX, int pieza_seleccionadaY) {
 	glEnable(GL_TEXTURE_2D);
 	if (pieza_seleccionadaX == posX && pieza_seleccionadaY == posY)
@@ -160,16 +56,10 @@ void Pieza::dibuja2D(const char foto1[], const char foto2[], const char foto3[],
 				glDisable(GL_LIGHTING);
 				glBegin(GL_POLYGON);
 				glColor3f(1, 1, 1);
-
-				GLfloat _X1= posX * 4 - 4;
-				GLfloat _X2= posX * 4;
-				GLfloat _Y1= posY * 4 - 4;				
-				GLfloat _Y2= posY * 4;				
-
-				glTexCoord2d(0, 1);		glVertex3f(_X1	, _Y1	, 0);
-				glTexCoord2d(1, 1);		glVertex3f(_X2	, _Y1	, 0);
-				glTexCoord2d(1, 0);		glVertex3f(_X2	, _Y2	, 0);
-				glTexCoord2d(0, 0);		glVertex3f(_X1	, _Y2	, 0);
+				glTexCoord2d(0, 1);		glVertex3f(posX * 4 - 4, posY * 4 - 4, 0);
+				glTexCoord2d(1, 1);		glVertex3f(posX * 4, posY * 4 - 4, 0);
+				glTexCoord2d(1, 0);		glVertex3f(posX * 4, posY * 4, 0);
+				glTexCoord2d(0, 0);		glVertex3f(posX * 4 - 4, posY * 4, 0);
 				glEnd();
 			}
 		}

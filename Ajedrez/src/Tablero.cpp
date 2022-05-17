@@ -7,12 +7,8 @@ Tablero::~Tablero() {
 	piezas.destruirContenido();
 }
 
-void Tablero::comienzo_partida(int juego, int color, int gráficos)
+void Tablero::comienzo_partida()
 {
-	opcion_juego = juego;
-	opcion_color = color;
-	opcion_graficos = gráficos;
-	turno = 0; // siempre empiezan jugando las blancas
 	casilla_origen = true;
 	casilla_destino = false;
 	pieza_selecionada.posX = pieza_selecionada.posY = 0;
@@ -68,68 +64,54 @@ void Tablero::comienzo_partida(int juego, int color, int gráficos)
 	}
 
 	x_ojo = 16;
-	y_ojo = 16;
-	z_ojo = 50;
+	y_ojo = 18;
+	z_ojo = 85;
 }
 
-void Tablero::ejecutar_movimiento()
+void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int opcion_graficos)
 {
 	bool jaque = false;
 	bool jaque_mate = false;
 	char color = 'w'; // esta variable sirve para saber que color de pieza mueve el jugador del turno
-	if (turno == 1)
+	if (*turno == 1)
 		color = 'b';
-
-	if (piezas.comprobar_jaquemate(turno, piezas) == false && piezas.comprobar_ahogado(turno) == false)	{
+		
+	if (piezas.comprobar_jaquemate(*turno, piezas) == false && piezas.comprobar_ahogado(*turno, piezas) == false){
 		if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
-			cout << "Casilla origen" << endl,
+			cout << "Casilla origen" << endl;
 			cin >> origen.posX >> origen.posY;
 		}
 		if (origen.posX != 0 && origen.posY != 0) {
-			if (piezas.comprobar_posicion(origen.posX, origen.posY, turno) == true) {
+			if (piezas.comprobar_posicion(origen.posX, origen.posY, *turno) == true) {
 				casilla_origen = false;
 				casilla_destino = true;
 				pieza_selecionada.posX = origen.posX;
 				pieza_selecionada.posY = origen.posY;
-				actualizarpantalla();
+				actualizarpantalla(opcion_juego, opcion_color, *turno, opcion_graficos);
 				if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
 					cout << "Casilla destino" << endl,
 					cin >> destino.posX >> destino.posY;
 				}
 				if (destino.posX != 0 && destino.posY != 0) {
-					if (piezas.comprobar_posicion(destino.posX, destino.posY, turno) == true) {
+					if (piezas.comprobar_posicion(destino.posX, destino.posY, *turno) == true) {
 						origen.posX = destino.posX;
 						origen.posY = destino.posY;
 						destino.posX = destino.posY = 0;
 						pieza_selecionada.posX = origen.posX;
 						pieza_selecionada.posY = origen.posY;
-						actualizarpantalla();
+						actualizarpantalla(opcion_juego , opcion_color, *turno, opcion_graficos);
 					}
-					else if (piezas.comprobar_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, turno) == true) {
-						ListaPiezas piezas2 = (piezas);
-						piezas2.ejecuta_movimientocopia(origen.posX, origen.posX, destino.posX, destino.posY, turno);
-						for (int i = 0; i < piezas2.getNumeroReyes(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
-							if (piezas2.getRey(i).getColor() == color)
-								jaque = piezas2.comprobar_jaque2(piezas2.getRey(i).getX(), piezas2.getRey(i).getY(), turno);
-						}
-						if (jaque == true) {
-							origen.posX = origen.posY = 0;
-							destino.posX = destino.posY = 0;
-							casilla_origen = true;
-							casilla_destino = false;
-						}
-						else {
-							piezas.ejecuta_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, turno);
-							pieza_selecionada.posX = pieza_selecionada.posY = 0;
-							origen.posX = origen.posY = 0;
-							destino.posX = destino.posY = 0;
-							if (turno == 0)
-								turno = 1;
-							else
-								turno = 0;
-							casilla_origen = true;
-							casilla_destino = false;
-						}	
+					else if (piezas.comprobar_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, *turno, piezas) == true) {
+						piezas.ejecuta_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, *turno);
+						pieza_selecionada.posX = pieza_selecionada.posY = 0;
+						origen.posX = origen.posY = 0;
+						destino.posX = destino.posY = 0;
+						if (*turno == 0)
+							*turno = 1;
+						else
+							*turno = 0;
+						casilla_origen = true;
+						casilla_destino = false;
 					}
 					else {
 						destino.posX = destino.posY = 0;
@@ -146,28 +128,150 @@ void Tablero::ejecutar_movimiento()
 		}
 	}
 	else {
-		if(piezas.comprobar_jaquemate(turno, piezas) == true)
+		if(piezas.comprobar_jaquemate(*turno, piezas) == true)
 			cout << "JAQUE MATE" << endl;
-		if (piezas.comprobar_ahogado(turno) == true)
+		if (piezas.comprobar_ahogado(*turno, piezas) == true)
 			cout << "TABLAS" << endl;
 	}
 }
 
-void Tablero::dibuja2D()
+void Tablero::juego_maquina(int* turno) {
+	int turnocontrario = 0;
+	if (turno == 0)
+		turnocontrario = 1;
+	Jugada jugada = IA::analisis_jugada(*turno, piezas);
+	piezas.ejecuta_movimiento(jugada.origen_x, jugada.origen_y, jugada.destino_x, jugada.destino_y, *turno);
+	if (*turno == 0)
+		*turno = 1;
+	else
+		*turno = 0;
+}
+
+void Tablero::dibuja2D(int opcion_juego, int opcion_color, int turno)
 {
 	gluLookAt(x_ojo, y_ojo, z_ojo,  // posicion del ojo
-		16, 16, 0.0,      // hacia que punto mira  (0,0,0) 
+		x_ojo, y_ojo, 0.0,      // hacia que punto mira  (0,0,0) 
 		0.0, 1.0, 0.0);      // definimos hacia arriba (eje Y)    
 
 	glDisable(GL_LIGHTING);
 
-	// DIBUJO DEL TABLERO
-	// creamos los cuadrados de colores del tablero
 	glEnable(GL_TEXTURE_2D);
-	for (int j = 1; j < 9; j++)	{
+	// pintamos el título de la pantalla
+	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/titulo.png").id);
+	glDisable(GL_LIGHTING);
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2d(0, 1);		glVertex3f(-15, 38, 0);
+	glTexCoord2d(1, 1);		glVertex3f(47, 38, 0);
+	glTexCoord2d(1, 0);		glVertex3f(47, 46, 0);
+	glTexCoord2d(0, 0);		glVertex3f(-15, 46, 0);
+	glEnd();
+
+	// pintamos de quien es el turno
+	if (turno == 0)
+		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/turnoblancas.png").id);
+	if (turno == 1)
+		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/turnonegras.png").id);
+	glDisable(GL_LIGHTING);
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2d(0, 1);		glVertex3f(0, -10, 0);
+	glTexCoord2d(1, 1);		glVertex3f(32, -10, 0);
+	glTexCoord2d(1, 0);		glVertex3f(32, -4, 0);
+	glTexCoord2d(0, 0);		glVertex3f(0, -4, 0);
+	glEnd();
+
+	// pintamos los avatares de los usuarios
+	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/jugadorblancas.png").id);
+	glDisable(GL_LIGHTING);
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2d(0, 1);		glVertex3f(-19, 30, 0);
+	glTexCoord2d(1, 1);		glVertex3f(-7, 30, 0);
+	glTexCoord2d(1, 0);		glVertex3f(-7, 35, 0);
+	glTexCoord2d(0, 0);		glVertex3f(-19, 35, 0);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/jugadornegras.png").id);
+	glDisable(GL_LIGHTING);
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2d(0, 1);		glVertex3f(39, 30, 0);
+	glTexCoord2d(1, 1);		glVertex3f(51, 30, 0);
+	glTexCoord2d(1, 0);		glVertex3f(51, 35, 0);
+	glTexCoord2d(0, 0);		glVertex3f(39, 35, 0);
+	glEnd();
+
+	if (opcion_juego == 1) {
+		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/iconojugadorlocal2.png").id);
+		glDisable(GL_LIGHTING);
+		glBegin(GL_POLYGON);
+		glColor3f(1, 1, 1);
+		glTexCoord2d(0, 1);		glVertex3f(-19, 16, 0);
+		glTexCoord2d(1, 1);		glVertex3f(-7, 16, 0);
+		glTexCoord2d(1, 0);		glVertex3f(-7, 30, 0);
+		glTexCoord2d(0, 0);		glVertex3f(-19, 30, 0);
+		glEnd();
+
+		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/iconojugadorlocal1.png").id);
+		glDisable(GL_LIGHTING);
+		glBegin(GL_POLYGON);
+		glColor3f(1, 1, 1);
+		glTexCoord2d(0, 1);		glVertex3f(39, 16, 0);
+		glTexCoord2d(1, 1);		glVertex3f(51, 16, 0);
+		glTexCoord2d(1, 0);		glVertex3f(51, 30, 0);
+		glTexCoord2d(0, 0);		glVertex3f(39, 30, 0);
+		glEnd();
+	}
+	if (opcion_juego == 2) {
+		if (opcion_color == 1) {
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/iconojugadorlocal2.png").id);
+			glDisable(GL_LIGHTING);
+			glBegin(GL_POLYGON);
+			glColor3f(1, 1, 1);
+			glTexCoord2d(0, 1);		glVertex3f(-19, 16, 0);
+			glTexCoord2d(1, 1);		glVertex3f(-7, 16, 0);
+			glTexCoord2d(1, 0);		glVertex3f(-7, 30, 0);
+			glTexCoord2d(0, 0);		glVertex3f(-19, 30, 0);
+			glEnd();
+
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/iconojugadormaquina.png").id);
+			glDisable(GL_LIGHTING);
+			glBegin(GL_POLYGON);
+			glColor3f(1, 1, 1);
+			glTexCoord2d(0, 1);		glVertex3f(39, 16, 0);
+			glTexCoord2d(1, 1);		glVertex3f(51, 16, 0);
+			glTexCoord2d(1, 0);		glVertex3f(51, 30, 0);
+			glTexCoord2d(0, 0);		glVertex3f(39, 30, 0);
+			glEnd();
+		}
+		if (opcion_color == 2) {
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/iconojugadormaquina.png").id);
+			glDisable(GL_LIGHTING);
+			glBegin(GL_POLYGON);
+			glColor3f(1, 1, 1);
+			glTexCoord2d(0, 1);		glVertex3f(-19, 16, 0);
+			glTexCoord2d(1, 1);		glVertex3f(-7, 16, 0);
+			glTexCoord2d(1, 0);		glVertex3f(-7, 30, 0);
+			glTexCoord2d(0, 0);		glVertex3f(-19, 30, 0);
+			glEnd();
+
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/iconojugadorlocal1.png").id);
+			glDisable(GL_LIGHTING);
+			glBegin(GL_POLYGON);
+			glColor3f(1, 1, 1);
+			glTexCoord2d(0, 1);		glVertex3f(39, 16, 0);
+			glTexCoord2d(1, 1);		glVertex3f(51, 16, 0);
+			glTexCoord2d(1, 0);		glVertex3f(51, 30, 0);
+			glTexCoord2d(0, 0);		glVertex3f(39, 30, 0);
+			glEnd();
+		}
+	}
+
+	// DIBUJO DEL TABLERO
+	// creamos los cuadrados de colores del tablero de las casillas que no están ocupadas
+	for (int j = 1; j < 9; j++) {
 		for (int i = 1; i < 9; i++) {
-			if (piezas.comprobar_posicion(j, i) == false) 
-			{
+			if (piezas.comprobar_posicion(j, i) == false) {
 				if (j % 2 == 1) {//Bucle para las coordenadas y
 					if (i % 2 == 1)//Bucle para las coordenadas x
 						glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/fondonegro.png").id);
@@ -189,25 +293,7 @@ void Tablero::dibuja2D()
 			}
 		}
 	}
-	//Prueba - Pintar fuera del tablero - Quitar
-	/*
-	GLfloat x = -6;
-	GLfloat y = 0; 
-	GLfloat tam = 4;
-	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/fondonegro.png").id);	
-	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/peonblanco_fondoblanco.png").id);
-	glDisable(GL_LIGHTING);
-	glBegin(GL_POLYGON);
-	glColor3f(1, 1, 1);
-	glTexCoord2d(0, 1);		glVertex3f(x, y, 0);
-	glTexCoord2d(1, 1);		glVertex3f(x +tam, y, 0);
-	glTexCoord2d(1, 0);		glVertex3f(x +tam, y + tam, 0);
-	glTexCoord2d(0, 0);		glVertex3f(x, y + tam, 0);
-	glEnd();
-	*/
 
-	//piezas.getPeon(0).dibuja2D_borrada();
-	
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
@@ -230,11 +316,11 @@ void Tablero::dibuja2D()
 	else
 		otro_turno = 0;
 
-	if ((pieza_selecionada.posX != 0) && (pieza_selecionada.posY != 0)){
+	if ((pieza_selecionada.posX != 0) && (pieza_selecionada.posY != 0)) {
 		// marcamos todos los posibles destinos de la pieza seleccionada
 		for (int i = 1; i < 9; i++) {
 			for (int j = 1; j < 9; j++) {
-				posible_destino = piezas.comprobar_movimiento(pieza_selecionada.posX, pieza_selecionada.posY, i, j, turno);
+				posible_destino = piezas.comprobar_movimiento(pieza_selecionada.posX, pieza_selecionada.posY, i, j, turno, piezas);
 				pieza_en_destino = piezas.comprobar_posicion(i, j, otro_turno);
 				for (int h = 0; h < piezas.getNumeroPeones(); h++) {
 					bool comeralpaso = false; // sirve para dibujar que podemos comer cuando comemos al paso
@@ -265,12 +351,6 @@ void Tablero::dibuja2D()
 
 	// DIBUJAMOS LAS PIEZAS
 	piezas.dibuja2D(pieza_selecionada.posX, pieza_selecionada.posY);
-		
-	//if (turno == 0) // Si es el turno de las blancas pintar abajo
-		//text.draw(10, 60, L"Tutor de Programación - Render Text 2D");
-	//else // Si es el turno de las blancas pintar arriba
-		//text.draw(10, 60, L"Tutor de Programación - Render Text 2D");
-		
 }
 
 void Tablero::dibuja3D()
@@ -310,7 +390,7 @@ void Tablero::dibuja3D()
 }
 
 
-void Tablero::actualizarpantalla() {
+void Tablero::actualizarpantalla(int opcion_juego, int opcion_color, int turno, int opcion_graficos) {
 	//Borrado de la pantalla	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -318,7 +398,7 @@ void Tablero::actualizarpantalla() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	if (opcion_graficos == 1)
-		dibuja2D();
+		dibuja2D(opcion_juego, opcion_color, turno);
 	if (opcion_graficos == 2)
 		dibuja3D();
 
@@ -327,42 +407,42 @@ void Tablero::actualizarpantalla() {
 }
 
 int Tablero::coordenadaX(int x) {
-	if (x >= 135 && x <= 200)
+	if (x >= 306 && x <= 355)
 		return 1;
-	else if (x >= 201 && x <= 266)
+	else if (x >= 356 && x <= 404)
 		return 2;
-	else if (x >= 267 && x <= 333)
+	else if (x >= 405 && x <= 452)
 		return 3;
-	else if (x >= 334 && x <= 400)
+	else if (x >= 453 && x <= 501)
 		return 4;
-	else if (x >= 401 && x <= 465)
+	else if (x >= 502 && x <= 549)
 		return 5;
-	else if (x >= 466 && x <= 532)
+	else if (x >= 550 && x <= 597)
 		return 6;
-	else if (x >= 533 && x <= 597)
+	else if (x >= 598 && x <= 645)
 		return 7;
-	else if (x >= 598 && x <= 665)
+	else if (x >= 646 && x <= 694)
 		return 8;
 	else
 		return 0;
 }
 
 int Tablero::coordenadaY(int y) {
-	if (y >= 43 && y <= 118)
+	if (y >= 191 && y <= 238)
 		return 8;
-	else if (y >= 119 && y <= 196)
+	else if (y >= 239 && y <= 282)
 		return 7;
-	else if (y >= 197 && y <= 273)
+	else if (y >= 283 && y <= 327)
 		return 6;
-	else if (y >= 274 && y <= 349)
+	else if (y >= 328 && y <= 373)
 		return 5;
-	else if (y >= 350 && y <= 427)
+	else if (y >= 374 && y <= 417)
 		return 4;
-	else if (y >= 428 && y <= 500)
+	else if (y >= 418 && y <= 463)
 		return 3;
-	else if (y >= 501 && y <= 580)
+	else if (y >= 464 && y <= 508)
 		return 2;
-	else if (y >= 581 && y <= 657)
+	else if (y >= 509 && y <= 553)
 		return 1;
 	else
 		return 0;

@@ -3,7 +3,7 @@
 
 class Torre : public Pieza {
 private:
-	bool primermovimiento; // esta variable me servirá para el enroque
+	bool primermovimiento = true; // esta variable me servirá para el enroque
 public:
 	Torre(int x, int y, char c, bool p);
 

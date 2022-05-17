@@ -1,10 +1,9 @@
 #pragma once
 #include <Tablero.h>
 
-class Coordinador 
-{
+class Coordinador {
 private:
-	int turno;  // sirve para controlar quien juega, 0 juegan blancas y 1 juegan negras
+	int turno = 0;  // sirve para controlar quien juega, 0 juegan blancas y 1 juegan negras
 	int opcion_juego; // valdrá 1 para el modo jugador vs jugador y 2 para el modo jugador vs máquina
 	int opcion_color; // valdrá 1 si quiero jugar con blancas y 2 si quiero jugar con negras
 	int opcion_graficos; // valdrá 1 para el juego 2D y 2 para el juego 3D
