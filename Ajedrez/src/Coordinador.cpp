@@ -2,6 +2,7 @@
 
 Coordinador::Coordinador() {
 	turno = 0; // siempre empiezan jugando las blancas
+	final_partida = 0;
 	opcion_juego = 0;
 	opcion_color = 0;
 	opcion_graficos = 0;
@@ -13,25 +14,27 @@ Coordinador::~Coordinador() {}
 
 void Coordinador::partida() {
 	if (estado == INSTRUCCIONES) {
+		turno = 0;
+		final_partida = 0;
 		opcion_juego = 0;
 		opcion_color = 0;
 		opcion_graficos = 0;
 	}
-	if (estado == JUEGO) {
+	if (estado == JUEGO && final_partida == 0) {
 		if (opcion_juego == 1)
-			tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos);
+			tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos, &final_partida);
 		if (opcion_juego == 2) {
 			if (opcion_color == 1) {
 				if (turno == 0)
-					tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos);
+					tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos, &final_partida);
 				if (turno == 1)
-					tablero.juego_maquina(&turno);
+					tablero.juego_maquina(&turno, &final_partida);
 			}
 			if (opcion_color == 2) {
 				if (turno == 0)
-					tablero.juego_maquina(&turno);
+					tablero.juego_maquina(&turno, &final_partida);
 				if (turno == 1)
-					tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos);
+					tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos, &final_partida);
 			}
 		}
 	}
@@ -44,7 +47,7 @@ void Coordinador::dibuja() {
 		dibujaelecciones();
 	if (estado == JUEGO) {
 		if (opcion_graficos == 1)
-			tablero.dibuja2D(opcion_juego, opcion_color, turno);
+			tablero.dibuja2D(opcion_juego, opcion_color, turno, final_partida);
 		if (opcion_graficos == 2)
 			tablero.dibuja3D();
 	}
@@ -193,6 +196,15 @@ void Coordinador::dibujaelecciones() {
 	}
 }
 
+void Coordinador::setEstado(int estado_nuevo) {
+	if (estado_nuevo == 1)
+		estado = INSTRUCCIONES;
+	if (estado_nuevo == 2)
+		estado = MENU;
+	if (estado_nuevo == 3)
+		estado = JUEGO;
+}
+
 int Coordinador::getEstado() {
 	if (estado == INSTRUCCIONES)
 		return 1;
@@ -232,6 +244,13 @@ void Coordinador::opcionSeleccionada(int x, int y) {
 				opcion_graficos = 2;
 				estado = JUEGO;
 			}
+		}
+	}
+	if (estado == JUEGO && (final_partida == 1 || final_partida == 2)) {
+		if (x >= 743 && x <= 962 && y >= 598 && y <= 654) {
+			estado = INSTRUCCIONES;
+			tablero.destruirContenido();
+			tablero.comienzo_partida();
 		}
 	}
 }

@@ -75,7 +75,20 @@ void clickraton(int boton, int estado, int x, int y) // sirve para controlar el 
 			glutPostRedisplay();
 		}
 	}
-	if (ajedrez.getEstado() == 3) {
+	if (ajedrez.getEstado() == 3 && (ajedrez.getfinal_partida() == 1 || ajedrez.getfinal_partida() == 2)) {
+		if (ajedrez.getGraficos() == 1) {
+			if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN)
+			{
+				ajedrez.opcionSeleccionada(x, y);
+				glutPostRedisplay();
+			}
+		}
+		if (ajedrez.getGraficos() == 2) {
+			ajedrez.setEstado(1);
+			ajedrez.destruirContenido();
+		}
+	}
+	if (ajedrez.getGraficos() == 1 && ajedrez.getEstado() == 3 && ajedrez.getfinal_partida() == 0) {
 		if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN && ajedrez.getCasilla_origen() == true)
 		{
 			ajedrez.setCoordenadaX_origen(x);

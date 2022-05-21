@@ -49,7 +49,7 @@ public:
 	ListaPiezas(const ListaPiezas& copia); // este constructor copia sirve para evaluar el jaque del movimiento que voy a realizar
 	virtual ~ListaPiezas();
 	void dibuja2D(int pieza_seleccionadaX, int pieza_seleccionadaY);
-	void dibujaBlancasComidas2D(const char foto[], float coordenadaX, float coordenadaY, int numerocomido); // sirve para dibujar las piezas comidas
+	void dibujaComidas2D(const char foto[], float coordenadaX, float coordenadaY, int numerocomido); // sirve para dibujar las piezas comidas
 	void dibuja3D();
 	
 	// funciones para comprobar la validez de los movimientos

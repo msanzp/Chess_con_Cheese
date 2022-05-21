@@ -83,20 +83,23 @@ void ListaPiezas::dibuja2D(int pieza_seleccionadaX, int pieza_seleccionadaY){
 		alfiles[i]->dibuja2D("imagenes/2D/alfilblanco_fondoblanco.png", "imagenes/2D/alfilblanco_fondonegro.png", "imagenes/2D/alfilnegro_fondoblanco.png", "imagenes/2D/alfilnegro_fondonegro.png", "imagenes/2D/alfilblanco_fondoverde.png", "imagenes/2D/alfilnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
 	for (int i = 0; i < numeropeones; i++)
 		peones[i]->dibuja2D("imagenes/2D/peonblanco_fondoblanco.png", "imagenes/2D/peonblanco_fondonegro.png", "imagenes/2D/peonnegro_fondoblanco.png", "imagenes/2D/peonnegro_fondonegro.png", "imagenes/2D/peonblanco_fondoverde.png", "imagenes/2D/peonnegro_fondoverde.png", pieza_seleccionadaX, pieza_seleccionadaY);
-	dibujaBlancasComidas2D("imagenes/2D/reinablanca_fondonegro.png", 10, 3.56, numeroreinasblancascomidas);
-	dibujaBlancasComidas2D("imagenes/2D/torreblanca_fondonegro.png", 10, 2.28, numerotorresblancascomidas);
-	dibujaBlancasComidas2D("imagenes/2D/caballoblanco_fondonegro.png", 10, 1, numerocaballosblancoscomidos);
-	dibujaBlancasComidas2D("imagenes/2D/alfilblanco_fondonegro.png", 12.5, 2.9, numeroalfilesblancoscomidos);
-	dibujaBlancasComidas2D("imagenes/2D/peonblanco_fondonegro.png", 12.5, 1.7, numeropeonesblancoscomidos);
+	
+	// piezas comidas por el jugador negro
+	dibujaComidas2D("imagenes/2D/reinablanca_fondonegro.png", 10, 3.56, numeroreinasblancascomidas);
+	dibujaComidas2D("imagenes/2D/torreblanca_fondonegro.png", 10, 2.28, numerotorresblancascomidas);
+	dibujaComidas2D("imagenes/2D/caballoblanco_fondonegro.png", 10, 1, numerocaballosblancoscomidos);
+	dibujaComidas2D("imagenes/2D/alfilblanco_fondonegro.png", 12.5, 2.9, numeroalfilesblancoscomidos);
+	dibujaComidas2D("imagenes/2D/peonblanco_fondonegro.png", 12.5, 1.7, numeropeonesblancoscomidos);
 
-	dibujaBlancasComidas2D("imagenes/2D/reinanegra_fondonegro.png", -4.5, 3.56, numeroreinasnegrascomidas);
-	dibujaBlancasComidas2D("imagenes/2D/torrenegra_fondonegro.png", -4.5, 2.28, numerotorresnegrascomidas);
-	dibujaBlancasComidas2D("imagenes/2D/caballonegro_fondonegro.png", -4.5, 1, numerocaballosnegroscomidos);
-	dibujaBlancasComidas2D("imagenes/2D/alfilnegro_fondonegro.png", -2, 2.9, numeroalfilesnegroscomidos);
-	dibujaBlancasComidas2D("imagenes/2D/peonnegro_fondonegro.png", -2, 1.7, numeropeonesnegroscomidos);
+	// piezas comidas por el jugador blanco
+	dibujaComidas2D("imagenes/2D/reinanegra_fondonegro.png", -4.5, 3.56, numeroreinasnegrascomidas);
+	dibujaComidas2D("imagenes/2D/torrenegra_fondonegro.png", -4.5, 2.28, numerotorresnegrascomidas);
+	dibujaComidas2D("imagenes/2D/caballonegro_fondonegro.png", -4.5, 1, numerocaballosnegroscomidos);
+	dibujaComidas2D("imagenes/2D/alfilnegro_fondonegro.png", -2, 2.9, numeroalfilesnegroscomidos);
+	dibujaComidas2D("imagenes/2D/peonnegro_fondonegro.png", -2, 1.7, numeropeonesnegroscomidos);
 }
 
-void ListaPiezas::dibujaBlancasComidas2D(const char foto[], float coordenadaX, float coordenadaY, int numerocomido)
+void ListaPiezas::dibujaComidas2D(const char foto[], float coordenadaX, float coordenadaY, int numerocomido)
 {
 	// esta función sirve para pintar las piezas que han sido eliminadas
 	// primero pintamos las piezas blancas comidas
@@ -496,6 +499,7 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 		for (int i = 0; i < numeroreyes; i++) {
 			for (int j = 0; j < numerotorres; j++) {
 				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true){
+					ETSIDI::play("sonidos/mover.wav");
 					reyes[i]->setX(7);
 					reyes[i]->setY(1);
 					torres[j]->setX(6);
@@ -509,6 +513,7 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 		for (int i = 0; i < numeroreyes; i++) {
 			for (int j = 0; j < numerotorres; j++) {
 				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					ETSIDI::play("sonidos/mover.wav");
 					reyes[i]->setX(3);
 					reyes[i]->setY(1);
 					torres[j]->setX(4);
@@ -522,6 +527,7 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 		for (int i = 0; i < numeroreyes; i++) {
 			for (int j = 0; j < numerotorres; j++) {
 				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					ETSIDI::play("sonidos/mover.wav");
 					reyes[i]->setX(7);
 					reyes[i]->setY(8);
 					torres[j]->setX(6);
@@ -535,6 +541,7 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 		for (int i = 0; i < numeroreyes; i++) {
 			for (int j = 0; j < numerotorres; j++) {
 				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true) {
+					ETSIDI::play("sonidos/mover.wav");
 					reyes[i]->setX(3);
 					reyes[i]->setY(8);
 					torres[j]->setX(4);
@@ -554,40 +561,54 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 
 	for (int i = 0; i < numeroreyes; i++) {
 		if (reyes[i]->getX() == origen_x && reyes[i]->getY() == origen_y) {
+			ETSIDI::play("sonidos/mover.wav");
 			reyes[i]->setX(destino_x);
 			reyes[i]->setY(destino_y);
 			reyes[i]->setPrimerMovimiento();
 		}
 	}
+
 	for (int i = 0; i < numeroreinas; i++) {
-		if (reinas[i]->getX() == destino_x && reinas[i]->getY() == destino_y)
+		if (reinas[i]->getX() == destino_x && reinas[i]->getY() == destino_y) {
+			ETSIDI::play("sonidos/comer.wav");
 			eliminar(reinas[i]);
+		}
 		if (reinas[i]->getX() == origen_x && reinas[i]->getY() == origen_y) {
+			ETSIDI::play("sonidos/mover.wav");
 			reinas[i]->setX(destino_x);
 			reinas[i]->setY(destino_y);
 		}
 	}
 	for (int i = 0; i < numerotorres; i++) {
-		if (torres[i]->getX() == destino_x && torres[i]->getY() == destino_y)
+		if (torres[i]->getX() == destino_x && torres[i]->getY() == destino_y) {
+			ETSIDI::play("sonidos/comer.wav");
 			eliminar(torres[i]);
+		}
 		if (torres[i]->getX() == origen_x && torres[i]->getY() == origen_y) {
+			ETSIDI::play("sonidos/mover.wav");
 			torres[i]->setX(destino_x);
 			torres[i]->setY(destino_y);
 			torres[i]->setPrimerMovimiento();
 		}
 	}
 	for (int i = 0; i < numerocaballos; i++) {
-		if (caballos[i]->getX() == destino_x && caballos[i]->getY() == destino_y)
+		if (caballos[i]->getX() == destino_x && caballos[i]->getY() == destino_y) {
+			ETSIDI::play("sonidos/comer.wav");
 			eliminar(caballos[i]);
+		}
 		if (caballos[i]->getX() == origen_x && caballos[i]->getY() == origen_y) {
+			ETSIDI::play("sonidos/mover.wav");
 			caballos[i]->setX(destino_x);
 			caballos[i]->setY(destino_y);
 		}
 	}
 	for (int i = 0; i < numeroalfiles; i++) {
-		if (alfiles[i]->getX() == destino_x && alfiles[i]->getY() == destino_y)
+		if (alfiles[i]->getX() == destino_x && alfiles[i]->getY() == destino_y) {
+			ETSIDI::play("sonidos/comer.wav");
 			eliminar(alfiles[i]);
+		}
 		if (alfiles[i]->getX() == origen_x && alfiles[i]->getY() == origen_y) {
+			ETSIDI::play("sonidos/mover.wav");
 			alfiles[i]->setX(destino_x);
 			alfiles[i]->setY(destino_y);
 		}
@@ -600,11 +621,16 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 		if (turno == 1)
 			color = 'w';
 
-		if (peones[i]->getX() == destino_x && peones[i]->getY() == destino_y)
+		if (peones[i]->getX() == destino_x && peones[i]->getY() == destino_y) {
+			ETSIDI::play("sonidos/comer.wav");
 			eliminar(peones[i]);
-		if (comer_paso == true && peones[i]->getX() == destino_x && peones[i]->getY() == origen_y && peones[i]->getColor() == color && peones[i]->getJugadaPrimerMovimiento() == numero_jugadas - 1)
+		}
+		if (comer_paso == true && peones[i]->getX() == destino_x && peones[i]->getY() == origen_y && peones[i]->getColor() == color && peones[i]->getJugadaPrimerMovimiento() == numero_jugadas - 1) {
+			ETSIDI::play("sonidos/comer.wav");
 			eliminar(peones[i]);
+		}
 		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
+			ETSIDI::play("sonidos/mover.wav");
 			peones[i]->setX(destino_x);
 			peones[i]->setY(destino_y);
 			if(peones[i]->getPrimerMovimiento() == true && fabs(destino_y - origen_y) == 2)
@@ -621,6 +647,7 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 				cout << "3: Coronar en alfil" << endl;
 				cout << "4: Coronar en reina" << endl;
 				cin >> opcion;
+				ETSIDI::play("sonidos/coronar.wav");
 				if (opcion == 1) {
 					eliminar(peones[i]);
 					Torre* torre = new Torre(posX, posY, color, false);
@@ -1279,6 +1306,7 @@ void ListaPiezas::destruirContenido() {
 		delete alfiles[i];
 	for (int i = 0; i < numeropeones; i++) // destrucción de peones
 		delete peones[i];
+	numero_jugadas = 1; // inicializa lista 
 	numeroreyes = 0; // inicializa lista 
 	numeroreinas = 0; // inicializa lista
 	numerotorres = 0; // inicializa lista

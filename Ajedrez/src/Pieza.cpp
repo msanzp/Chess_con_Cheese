@@ -175,7 +175,6 @@ void Pieza::dibuja3D(const char foto1[]) {
 				cadena3[j - espacio3 - 1] = linea[j];
 
 			// una vez ya hemos separado los numeros en cadenas, los convertimos a numeros
-			// una vez ya hemos separado los numeros en cadenas, los convertimos a numeros
 			int primer_vertice = stof(cadena1);
 			int segundo_vertice = stof(cadena2);
 			int tercer_vertice = stof(cadena3);

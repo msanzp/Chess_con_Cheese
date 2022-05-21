@@ -68,7 +68,7 @@ void Tablero::comienzo_partida()
 	z_ojo = 85;
 }
 
-void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int opcion_graficos)
+void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int opcion_graficos, int* final_partida)
 {
 	bool jaque = false;
 	bool jaque_mate = false;
@@ -77,7 +77,9 @@ void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int op
 		color = 'b';
 		
 	if (piezas.comprobar_jaquemate(*turno, piezas) == false && piezas.comprobar_ahogado(*turno, piezas) == false){
+		*final_partida = 0;
 		if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
+			actualizarpantalla(opcion_juego, opcion_color, *turno, opcion_graficos, *final_partida);
 			cout << "Casilla origen" << endl;
 			cin >> origen.posX >> origen.posY;
 		}
@@ -87,8 +89,8 @@ void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int op
 				casilla_destino = true;
 				pieza_selecionada.posX = origen.posX;
 				pieza_selecionada.posY = origen.posY;
-				actualizarpantalla(opcion_juego, opcion_color, *turno, opcion_graficos);
 				if (opcion_graficos == 2) { // solamente vamos a jugar con teclado para el modo de juego 3D debido a los altos tiempos de carga
+					actualizarpantalla(opcion_juego, opcion_color, *turno, opcion_graficos, *final_partida);
 					cout << "Casilla destino" << endl,
 					cin >> destino.posX >> destino.posY;
 				}
@@ -99,7 +101,6 @@ void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int op
 						destino.posX = destino.posY = 0;
 						pieza_selecionada.posX = origen.posX;
 						pieza_selecionada.posY = origen.posY;
-						actualizarpantalla(opcion_juego , opcion_color, *turno, opcion_graficos);
 					}
 					else if (piezas.comprobar_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, *turno, piezas) == true) {
 						piezas.ejecuta_movimiento(origen.posX, origen.posY, destino.posX, destino.posY, *turno);
@@ -128,26 +129,38 @@ void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int op
 		}
 	}
 	else {
-		if(piezas.comprobar_jaquemate(*turno, piezas) == true)
-			cout << "JAQUE MATE" << endl;
+		if (piezas.comprobar_jaquemate(*turno, piezas) == true) {
+			ETSIDI::play("sonidos/victoria.wav");
+			*final_partida = 1;
+		}
 		if (piezas.comprobar_ahogado(*turno, piezas) == true)
-			cout << "TABLAS" << endl;
+			*final_partida = 2;
 	}
 }
 
-void Tablero::juego_maquina(int* turno) {
+void Tablero::juego_maquina(int* turno, int* final_partida) {
 	int turnocontrario = 0;
 	if (turno == 0)
 		turnocontrario = 1;
-	Jugada jugada = IA::analisis_jugada(*turno, piezas);
-	piezas.ejecuta_movimiento(jugada.origen_x, jugada.origen_y, jugada.destino_x, jugada.destino_y, *turno);
-	if (*turno == 0)
-		*turno = 1;
-	else
-		*turno = 0;
+
+	if (piezas.comprobar_jaquemate(*turno, piezas) == false && piezas.comprobar_ahogado(*turno, piezas) == false) {
+		Jugada jugada = IA::analisis_jugada(*turno, piezas);
+		piezas.ejecuta_movimiento(jugada.origen_x, jugada.origen_y, jugada.destino_x, jugada.destino_y, *turno);
+		if (*turno == 0)
+			*turno = 1;
+		else
+			*turno = 0;
+	}
+	else {
+		if (piezas.comprobar_jaquemate(*turno, piezas) == true)
+			*final_partida = 1;
+		if (piezas.comprobar_ahogado(*turno, piezas) == true)
+			*final_partida = 2;
+	}
+	*final_partida = 0;
 }
 
-void Tablero::dibuja2D(int opcion_juego, int opcion_color, int turno)
+void Tablero::dibuja2D(int opcion_juego, int opcion_color, int turno, int final_partida)
 {
 	gluLookAt(x_ojo, y_ojo, z_ojo,  // posicion del ojo
 		x_ojo, y_ojo, 0.0,      // hacia que punto mira  (0,0,0) 
@@ -168,18 +181,44 @@ void Tablero::dibuja2D(int opcion_juego, int opcion_color, int turno)
 	glEnd();
 
 	// pintamos de quien es el turno
-	if (turno == 0)
-		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/turnoblancas.png").id);
-	if (turno == 1)
-		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/turnonegras.png").id);
-	glDisable(GL_LIGHTING);
-	glBegin(GL_POLYGON);
-	glColor3f(1, 1, 1);
-	glTexCoord2d(0, 1);		glVertex3f(0, -10, 0);
-	glTexCoord2d(1, 1);		glVertex3f(32, -10, 0);
-	glTexCoord2d(1, 0);		glVertex3f(32, -4, 0);
-	glTexCoord2d(0, 0);		glVertex3f(0, -4, 0);
-	glEnd();
+	if (final_partida == 0) {
+		if (turno == 0)
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/turnoblancas.png").id);
+		if (turno == 1)
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/turnonegras.png").id);
+		glDisable(GL_LIGHTING);
+		glBegin(GL_POLYGON);
+		glColor3f(1, 1, 1);
+		glTexCoord2d(0, 1);		glVertex3f(0, -10, 0);
+		glTexCoord2d(1, 1);		glVertex3f(32, -10, 0);
+		glTexCoord2d(1, 0);		glVertex3f(32, -4, 0);
+		glTexCoord2d(0, 0);		glVertex3f(0, -4, 0);
+		glEnd();
+	}
+	if (final_partida == 1 || final_partida == 2) {
+		if (final_partida == 1)
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/jaquemate.png").id);
+		if (final_partida == 2)
+			glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/ahogado.png").id);
+		glDisable(GL_LIGHTING);
+		glBegin(GL_POLYGON);
+		glColor3f(1, 1, 1);
+		glTexCoord2d(0, 1);		glVertex3f(3, -11, 0);
+		glTexCoord2d(1, 1);		glVertex3f(29, -11, 0);
+		glTexCoord2d(1, 0);		glVertex3f(29, -2, 0);
+		glTexCoord2d(0, 0);		glVertex3f(3, -2, 0);
+		glEnd();
+
+		glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/volvermenu.png").id);
+		glDisable(GL_LIGHTING);
+		glBegin(GL_POLYGON);
+		glColor3f(1, 1, 1);
+		glTexCoord2d(0, 1);		glVertex3f(36, -9, 0);
+		glTexCoord2d(1, 1);		glVertex3f(54, -9, 0);
+		glTexCoord2d(1, 0);		glVertex3f(54, -4, 0);
+		glTexCoord2d(0, 0);		glVertex3f(36, -4, 0);
+		glEnd();
+	}
 
 	// pintamos los avatares de los usuarios
 	glBindTexture(GL_TEXTURE_2D, ETSIDI::getTexture("imagenes/2D/jugadorblancas.png").id);
@@ -306,7 +345,7 @@ void Tablero::dibuja2D(int opcion_juego, int opcion_color, int turno)
 	glVertex3f(33.5, -1.5, -1);
 	glEnd();
 	
-	// DIBUJAMOS POSICIÓN DE PIEZA SELECCIONADA Y POSIBLES DESTINOS
+	// DIBUJAMOS POSIBLES DESTINOS
 	bool posible_destino; // sirve para determinar si la posición de destino es válida
 	bool pieza_en_destino; // sirve para saber si la posición de destino está ocupada por una pieza del otro
 
@@ -365,8 +404,10 @@ void Tablero::dibuja3D()
 		for (int i = 0; i < 10; i++) {
 			if (j == 0 || j == 9 || i == 0 || i == 9)
 				glColor3ub(153, 102, 51);
-			else if (j % 2 == 1) {//Bucle para las coordenadas y
-				if (i % 2 == 1)//Bucle para las coordenadas x
+			else if (pieza_selecionada.posX != 0 && pieza_selecionada.posY != 0 && pieza_selecionada.posX == j && pieza_selecionada.posY == i)
+				glColor3ub(0, 255, 0);
+			else if (j % 2 == 1) { //Bucle para las coordenadas y
+				if (i % 2 == 1) //Bucle para las coordenadas x
 					glColor3ub(0, 0, 204);
 				else
 					glColor3ub(102, 204, 255);
@@ -377,8 +418,6 @@ void Tablero::dibuja3D()
 				else
 					glColor3ub(102, 204, 255);
 			}
-			if(pieza_selecionada.posX != 0 && pieza_selecionada.posY != 0 && pieza_selecionada.posX == j && pieza_selecionada.posY == i)
-				glColor3ub(0, 255, 0);
 			glTranslatef(i * 6 - 3, -3, j * 6 - 3);
 			glutSolidCube(6);
 			glTranslatef(- i * 6 + 3, 3, - j * 6 + 3);
@@ -390,7 +429,7 @@ void Tablero::dibuja3D()
 }
 
 
-void Tablero::actualizarpantalla(int opcion_juego, int opcion_color, int turno, int opcion_graficos) {
+void Tablero::actualizarpantalla(int opcion_juego, int opcion_color, int turno, int opcion_graficos, int final_partida) {
 	//Borrado de la pantalla	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -398,7 +437,7 @@ void Tablero::actualizarpantalla(int opcion_juego, int opcion_color, int turno, 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	if (opcion_graficos == 1)
-		dibuja2D(opcion_juego, opcion_color, turno);
+		dibuja2D(opcion_juego, opcion_color, turno, final_partida);
 	if (opcion_graficos == 2)
 		dibuja3D();
 
@@ -446,4 +485,11 @@ int Tablero::coordenadaY(int y) {
 		return 1;
 	else
 		return 0;
+}
+
+void Tablero::destruirContenido() {
+	casilla_origen = true;
+	casilla_destino = false;
+	pieza_selecionada.posX = pieza_selecionada.posY = 0;
+	piezas.destruirContenido();
 }

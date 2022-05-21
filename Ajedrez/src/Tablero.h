@@ -26,8 +26,8 @@ public:
 
 	~Tablero();
 	void comienzo_partida();
-	void juego_local(int opcion_juego, int opcion_color, int* turno, int opcion_graficos); // esta funcion controla el funcionamiento del jugador local
-	void juego_maquina(int* turno); // esta funcion controla el funcionamiento del jugador local
+	void juego_local(int opcion_juego, int opcion_color, int* turno, int opcion_graficos, int* final_partida); // esta funcion controla el funcionamiento del jugador local
+	void juego_maquina(int* turno, int* final_partida); // esta funcion controla el funcionamiento del jugador local
 
 	// funciones set
 	void setCoordenadaX_origen(int x) { origen.posX = x; }
@@ -40,11 +40,14 @@ public:
 	bool getCasilla_destino() { return casilla_destino; }
 
 	// funciones que sirven para dibujar el tablero
-	void dibuja2D(int opcion_juego, int opcion_color, int turno);
+	void dibuja2D(int opcion_juego, int opcion_color, int turno, int final_partida);
 	void dibuja3D();
-	void actualizarpantalla(int opcion_juego, int opcion_color, int turno, int opcion_graficos);
+	void actualizarpantalla(int opcion_juego, int opcion_color, int turno, int opcion_graficos, int final_partida);
 
 	// funciones para el control por ratón
 	int coordenadaX(int x);
 	int coordenadaY(int y);
+
+	//función para eliminar todas las piezas cuando se termine la partida
+	void destruirContenido();
 };
