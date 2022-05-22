@@ -28,11 +28,11 @@ void Coordinador::partida() {
 				if (turno == 0)
 					tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos, &final_partida);
 				if (turno == 1)
-					tablero.juego_maquina(&turno, &final_partida);
+					tablero.juego_maquina(opcion_juego, opcion_color, &turno, opcion_graficos, &final_partida);
 			}
 			if (opcion_color == 2) {
 				if (turno == 0)
-					tablero.juego_maquina(&turno, &final_partida);
+					tablero.juego_maquina(opcion_juego, opcion_color, &turno, opcion_graficos, &final_partida);
 				if (turno == 1)
 					tablero.juego_local(opcion_juego, opcion_color, &turno, opcion_graficos, &final_partida);
 			}

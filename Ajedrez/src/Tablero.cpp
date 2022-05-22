@@ -138,10 +138,11 @@ void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int op
 	}
 }
 
-void Tablero::juego_maquina(int* turno, int* final_partida) {
+void Tablero::juego_maquina(int opcion_juego, int opcion_color, int* turno, int opcion_graficos, int* final_partida) {
 
 	if (piezas.comprobar_jaquemate(*turno, piezas) == false && piezas.comprobar_ahogado(*turno, piezas) == false) {
 		*final_partida = 0;
+		actualizarpantalla(opcion_juego, opcion_color, *turno, opcion_graficos, *final_partida);
 		Jugada jugada = IA::analisis_jugada(*turno, piezas);
 		piezas.ejecuta_movimiento(jugada.origen_x, jugada.origen_y, jugada.destino_x, jugada.destino_y, *turno);
 		if (*turno == 0)

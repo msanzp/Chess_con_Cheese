@@ -27,7 +27,7 @@ public:
 	~Tablero();
 	void comienzo_partida();
 	void juego_local(int opcion_juego, int opcion_color, int* turno, int opcion_graficos, int* final_partida); // esta funcion controla el funcionamiento del jugador local
-	void juego_maquina(int* turno, int* final_partida); // esta funcion controla el funcionamiento del jugador local
+	void juego_maquina(int opcion_juego, int opcion_color, int* turno, int opcion_graficos, int* final_partida); // esta funcion controla el funcionamiento del jugador maquina
 
 	// funciones set
 	void setCoordenadaX_origen(int x) { origen.posX = x; }

@@ -1,3 +1,69 @@
-﻿  IA.cpp
-D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\IA.cpp(118): warning C4715: 'IA::ValorPrioridad': no todas las rutas de acceso de control devuelven un valor
+﻿  Ajedrez.cpp
+  Coordinador.cpp
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(72,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(73,24): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(74,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(75,28): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(79,28): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(80,28): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(81,28): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(82,28): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(85,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(86,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(87,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(111,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(112,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(113,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(114,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(120,25): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(121,25): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(122,24): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(123,24): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(141,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(142,28): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(143,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(144,25): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(150,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(151,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(152,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(153,25): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(172,31): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(173,31): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(174,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(175,29): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(181,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(182,27): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(183,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(184,26): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+  Tablero.cpp
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(325,54): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(325,43): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(326,50): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(326,39): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(327,46): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(327,39): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(328,50): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(328,43): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(368,37): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(368,26): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(370,34): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(370,20): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(376,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(376,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(376,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(377,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(377,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(377,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(378,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(378,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(378,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(379,47): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(379,37): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(379,24): warning C4244: 'argumento': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(419,38): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(419,23): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(421,41): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Tablero.cpp(421,25): warning C4244: 'argumento': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+  Generando código...
+D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\src\Coordinador.cpp(215): warning C4715: 'Coordinador::getEstado': no todas las rutas de acceso de control devuelven un valor
   Pang.vcxproj -> D:\Sergio\UNIVERSIDAD\Tercero\Proyectos\Ajedrez\bin\Ajedrez.exe

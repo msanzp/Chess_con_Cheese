@@ -260,10 +260,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 						if (piezas2.getRey(j).getColor() == color) {
 							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								piezas2.~ListaPiezas();
 								return false;
 							}
 						}
 					}
+					piezas2.~ListaPiezas();
 				}
 			}
 			else
@@ -284,10 +286,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 						if (piezas2.getRey(j).getColor() == color) {
 							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								piezas2.~ListaPiezas();
 								return false;
 							}
 						}
 					}
+					piezas2.~ListaPiezas();
 				}
 			}
 			else
@@ -308,10 +312,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 						if (piezas2.getRey(j).getColor() == color) {
 							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								piezas2.~ListaPiezas();
 								return false;
 							}
 						}
 					}
+					piezas2.~ListaPiezas();
 				}
 			}
 			else
@@ -332,10 +338,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 						if (piezas2.getRey(j).getColor() == color) {
 							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								piezas2.~ListaPiezas();
 								return false;
 							}
 						}
 					}
+					piezas2.~ListaPiezas();
 				}
 			}
 			else
@@ -356,10 +364,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 						if (piezas2.getRey(j).getColor() == color) {
 							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								piezas2.~ListaPiezas();
 								return false;
 							}
 						}
 					}
+					piezas2.~ListaPiezas();
 				}
 			}
 			else
@@ -391,10 +401,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 						if (piezas2.getRey(j).getColor() == color) {
 							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								piezas2.~ListaPiezas();
 								return false;
 							}
 						}
 					}
+					piezas2.~ListaPiezas();
 				}
 				else
 					return false;
@@ -410,10 +422,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 						if (piezas2.getRey(j).getColor() == color) {
 							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								piezas2.~ListaPiezas();
 								return false;
 							}
 						}
 					}
+					piezas2.~ListaPiezas();
 					return true;
 				}
 				// tras ello, ejecutamos la jugada de "comer al paso"
@@ -424,10 +438,12 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 						for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getRey(j).getColor() == color) {
 								if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+									piezas2.~ListaPiezas();
 									return false;
 								}
 							}
 						}
+						piezas2.~ListaPiezas();
 					}
 					return true;
 				}
@@ -885,10 +901,12 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 						for (int i = 0; i < piezas2.getNumeroReyes(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getRey(i).getColor() == color) {
 								if (piezas2.comprobar_jaque(j, h, turno) == false) {
+									piezas2.~ListaPiezas();
 									return false;
 								}
 							}
 						}
+						piezas2.~ListaPiezas();
 					}
 				}
 			}
@@ -903,10 +921,13 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 						piezas2.ejecuta_movimientocopia(reinas[i]->getX(), reinas[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroReinas(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getReina(i).getColor() == color) {
-								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false) {
+									piezas2.~ListaPiezas();
 									return false;
+								}
 							}
 						}
+						piezas2.~ListaPiezas();
 					}
 				}
 			}
@@ -921,10 +942,13 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 						piezas2.ejecuta_movimientocopia(torres[i]->getX(), torres[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroTorres(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getTorre(i).getColor() == color) {
-								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false) {
+									piezas2.~ListaPiezas();
 									return false;
+								}
 							}
 						}
+						piezas2.~ListaPiezas();
 					}
 				}
 			}
@@ -939,10 +963,13 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 						piezas2.ejecuta_movimientocopia(caballos[i]->getX(), caballos[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroCaballos(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getCaballo(i).getColor() == color) {
-								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false) {
+									piezas2.~ListaPiezas();
 									return false;
+								}
 							}
 						}
+						piezas2.~ListaPiezas();
 					}
 				}
 			}
@@ -957,10 +984,13 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 						piezas2.ejecuta_movimientocopia(alfiles[i]->getX(), alfiles[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroAlfiles(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
 							if (piezas2.getAlfil(i).getColor() == color) {
-								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false) {
+									piezas2.~ListaPiezas();
 									return false;
+								}
 							}
 						}
+						piezas2.~ListaPiezas();
 					}
 				}
 			}
@@ -974,10 +1004,14 @@ bool ListaPiezas::comprobar_jaquemate(int turno, ListaPiezas L) {
 						ListaPiezas piezas2 = (L);
 						piezas2.ejecuta_movimientocopia(peones[i]->getX(), peones[i]->getY(), j, h, turno);
 						for (int i = 0; i < piezas2.getNumeroPeones(); i++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
-							if (piezas2.getPeon(i).getColor() == color)
-								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false)
+							if (piezas2.getPeon(i).getColor() == color) {
+								if (piezas2.comprobar_jaque(posreyX, posreyY, turno) == false) {
+									piezas2.~ListaPiezas();
 									return false;
+								}
+							}
 						}
+						piezas2.~ListaPiezas();
 					}
 				}
 			}

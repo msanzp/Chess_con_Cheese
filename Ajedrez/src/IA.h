@@ -16,5 +16,6 @@ private:
 public:
 	static int puntuacion(int origen_x, int origen_y, int destino_x, int destino_y, int turno, ListaPiezas piezas, string tipo, char color); // sirve para asociar una puntuación a cada jugada
 	static Jugada comparacion(int origen_x, int origen_y, int destino_x, int destino_y, int puntuacion, Jugada mejor); // sirve para comparar 2 jugadas a ver cual es mejor
-	static Jugada analisis_jugada(int turno, ListaPiezas piezas); // sirve para analizar 1 turno tuyo y otro del rival
+	static Jugada analisis_jugada(int turno, ListaPiezas piezas);
+	static int mejor_jugada_oponente(int turno, ListaPiezas piezas);
 };
