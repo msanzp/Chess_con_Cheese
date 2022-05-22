@@ -1,11 +1,13 @@
 #include "IA.h"
 #include <iostream>
 
+#define PUNTUACION_JAQUE 50
 #define PUNTUACION_PEON 100
 #define PUNTUACION_ALFIL 200
 #define PUNTUACION_CABALLO 200
 #define PUNTUACION_TORRE 300
 #define PUNTUACION_REINA 400
+#define PUNTUACION_JAQUE_MATE 10000
 
 int Mapa_Caballo[8][8] = {
 		{1, 2, 3, 3, 3, 3, 2, 1},
@@ -18,7 +20,7 @@ int Mapa_Caballo[8][8] = {
 		{1, 2, 3, 3, 3, 3, 2, 1},
 };
 
-int Mapa_Rey_Blanco[8][8] = {
+int Mapa_Rey[8][8] = {
 		{2, 2, 2, 1, 1, 2, 2, 2},
 		{2, 2, 2, 1, 1, 2, 2, 2},
 		{3, 2, 2, 1, 1, 2, 2, 3},
@@ -40,7 +42,7 @@ int Mapa_Reina[8][8] = {
 		{2, 3, 4, 4, 4, 4, 3, 2},
 };
 
-int Mapa_Torre_Blanco[8][8] = {
+int Mapa_Torre[8][8] = {
 		{5, 5, 5, 5, 5, 5, 5, 5},
 		{5, 6, 6, 6, 6, 6, 6, 5},
 		{3, 4, 4, 4, 4, 4, 4, 3},
@@ -51,7 +53,7 @@ int Mapa_Torre_Blanco[8][8] = {
 		{4, 4, 5, 5, 5, 5, 4, 4},
 };
 
-int Mapa_Alfil_Blanco[8][8] = {
+int Mapa_Alfil[8][8] = {
 		{1, 2, 2, 2, 2, 2, 2, 1},
 		{2, 3, 3, 3, 3, 3, 3, 2},
 		{2, 3, 4, 5, 5, 4, 3, 2},
@@ -62,7 +64,7 @@ int Mapa_Alfil_Blanco[8][8] = {
 		{3, 2, 2, 2, 2, 2, 2, 1},
 };
 
-int Mapa_Peon_Blanco[8][8] = {
+int Mapa_Peon[8][8] = {
 		{5, 5, 5, 5, 5, 5, 5, 5},
 		{6, 6, 6, 6, 6, 6, 6, 6},
 		{3, 3, 5, 5, 5, 5, 3, 3},
@@ -80,18 +82,18 @@ int  IA::ValorPrioridad(int b, int c, string tipo, char color)
 	}
 	else if (tipo == "Rey") {
 		if (color == 'w') {
-			return Mapa_Rey_Blanco[b - 1][c - 1];
+			return Mapa_Rey[b - 1][c - 1];
 		}
 		else {
-			return Mapa_Rey_Blanco[8 - b][8 - c];
+			return Mapa_Rey[8 - b][8 - c];
 		}
 	}
 	else if (tipo == "Alfil") {
 		if (color == 'w') {
-			return Mapa_Alfil_Blanco[b - 1][c - 1];
+			return Mapa_Alfil[b - 1][c - 1];
 		}
 		else {
-			return Mapa_Alfil_Blanco[8 - b][8 - c];
+			return Mapa_Alfil[8 - b][8 - c];
 		}
 	}
 	else if (tipo == "Caballo") {
@@ -99,60 +101,65 @@ int  IA::ValorPrioridad(int b, int c, string tipo, char color)
 	}
 	else if (tipo == "Torre") {
 		if (color == 'w') {
-			return Mapa_Torre_Blanco[b - 1][c - 1];
+			return Mapa_Torre[b - 1][c - 1];
 		}
 		else {
-			return Mapa_Torre_Blanco[8 - b][8 - c];
+			return Mapa_Torre[8 - b][8 - c];
 		}
 	}
 	else if (tipo == "Peon") {
 		if (color == 'w') {
-			return Mapa_Peon_Blanco[b - 1][c - 1];
+			return Mapa_Peon[b - 1][c - 1];
 		}
 		else {
-			return Mapa_Peon_Blanco[8 - b][8 - c];
+			return Mapa_Peon[8 - b][8 - c];
 		}
 	}
 }
 
-int IA::puntuacion(int destino_x, int destino_y, ListaPiezas piezas, string tipo, char color) {
+int IA::puntuacion(int origen_x, int origen_y, int destino_x, int destino_y, int turno, ListaPiezas piezas, string tipo, char color) {
+	int puntuacion_total = 0;
+	char colorcontrario = 'w';
+	if (color == 'w')
+		colorcontrario = 'b';
 
-	/*
-		Primero se evalua las puntuaciones de una jugada en la que se come
-		comprobando que hay una pieza en la casilla de destino
-		y añadiendola comparacioon de prioridad de posiciones
-	*/
+	// primero compruebo los posibles jaques
+	ListaPiezas piezas2 = (piezas);
+	piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+	for (int j = 0; j < piezas2.getNumeroReyes(); j++) {
+		if (piezas2.getRey(j).getColor() == colorcontrario) {
+			if (piezas2.comprobar_jaquemate(turno, piezas2) == true)
+				puntuacion_total += PUNTUACION_JAQUE_MATE;
+			if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true)
+				puntuacion_total += PUNTUACION_JAQUE;
+		}
+	}
 
+	// despues compruebo si puedo o no comer ficha
 	for (int i = 0; i < piezas.getNumeroReinas(); i++) {
 		if (piezas.getReina(i).getX() == destino_x && piezas.getReina(i).getY() == destino_y)
-			return PUNTUACION_REINA + ValorPrioridad(destino_x, destino_y, tipo, color);
+			puntuacion_total += PUNTUACION_REINA;
 	}
 	for (int i = 0; i < piezas.getNumeroTorres(); i++) {
 		if (piezas.getTorre(i).getX() == destino_x && piezas.getTorre(i).getY() == destino_y)
-			return PUNTUACION_TORRE + ValorPrioridad(destino_x, destino_y, tipo, color);
+			puntuacion_total += PUNTUACION_TORRE;
 	}
 	for (int i = 0; i < piezas.getNumeroCaballos(); i++) {
 		if (piezas.getCaballo(i).getX() == destino_x && piezas.getCaballo(i).getY() == destino_y)
-			return PUNTUACION_CABALLO + ValorPrioridad(destino_x, destino_y, tipo, color);
+			puntuacion_total += PUNTUACION_CABALLO;
 	}
 	for (int i = 0; i < piezas.getNumeroAlfiles(); i++) {
 		if (piezas.getAlfil(i).getX() == destino_x && piezas.getAlfil(i).getY() == destino_y)
-			return PUNTUACION_ALFIL + ValorPrioridad(destino_x, destino_y, tipo, color);
+			puntuacion_total += PUNTUACION_ALFIL;
 	}
 	for (int i = 0; i < piezas.getNumeroPeones(); i++) {
 		if (piezas.getPeon(i).getX() == destino_x && piezas.getPeon(i).getY() == destino_y)
-			return PUNTUACION_PEON + ValorPrioridad(destino_x, destino_y, tipo, color);
+			puntuacion_total += PUNTUACION_PEON;
 	}
 
-	/*
-		Al llegar hasta este punto la función ha comprobado
-		que no va a comer y va devolver la valoración de la
-		jugada en cuanto a posiciones favorables
-	*/
+	puntuacion_total += ValorPrioridad(destino_x, destino_y, tipo, color);
 
-	return ValorPrioridad(destino_x, destino_y, tipo, color);
-
-
+	return puntuacion_total;
 }
 
 Jugada IA::comparacion(int origen_x, int origen_y, int destino_x, int destino_y, int puntuacion, Jugada mejor) {
@@ -169,50 +176,51 @@ Jugada IA::comparacion(int origen_x, int origen_y, int destino_x, int destino_y,
 }
 
 Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
-	Jugada mejor_jugada = { 0,0,0,0,0 };
-	int puntuacion_jugada_1, puntuacion_jugada_2, puntuacion_total;
-	int turno_contrario = 1;
+
+	Jugada mejor_jugada = {0,0,0,0,0};
+	int puntuacion_jugada_1 = 0, puntuacion_jugada_2 = 0, puntuacion_total = 0;
 	char color = 'w';
-	char color_contrario = 'b';
-	if (turno == 1) {
-		turno_contrario = 0;
+	char colorcontrario = 'b';
+	int turnocontrario = 1;
+	if (turno == 1)	{
 		color = 'b';
-		color_contrario = 'w';
+		colorcontrario = 'w';
+		turnocontrario = 0;
 	}
+
 	// dado que al principio no va a poder tomar una decisión, vamos a poner que sus 4 primeros movimientos siempre sean los mismos
 	if (turno == 0 && piezas.getNumeroJugadas() == 1)
-		return mejor_jugada = { 5,2,5,4,0 };
+		return mejor_jugada = { 5,2,5,4,100 };
 	if (turno == 1 && piezas.getNumeroJugadas() == 2)
-		return mejor_jugada = { 5,7,5,5,0 };
+		return mejor_jugada = { 5,7,5,5,100 };
 	if (turno == 0 && piezas.getNumeroJugadas() == 3)
-		return mejor_jugada = { 7,1,8,3,0 };
+		return mejor_jugada = { 7,1,6,3,100 };
 	if (turno == 1 && piezas.getNumeroJugadas() == 4)
-		return mejor_jugada = { 7,8,8,6,0 };
+		return mejor_jugada = { 7,8,6,6,100 };
 	if (turno == 0 && piezas.getNumeroJugadas() == 5)
-		return mejor_jugada = { 6,1,4,3,0 };
+		return mejor_jugada = { 6,1,4,3,100 };
 	if (turno == 1 && piezas.getNumeroJugadas() == 6)
-		return mejor_jugada = { 6,8,4,6,0 };
+		return mejor_jugada = { 6,8,4,6,100 };
 	if (turno == 0 && piezas.getNumeroJugadas() == 7)
-		return mejor_jugada = { 5,1,7,1, };
+		return mejor_jugada = { 5,1,7,1,100 };
 	if (turno == 1 && piezas.getNumeroJugadas() == 8)
-		return mejor_jugada = { 5,8,7,8,0 };
+		return mejor_jugada = { 5,8,7,8,100 };
 
-	// una vez ya hemos hecho los primeros movimientos, empezamos a analizar los movimientos
 
 	for (int a = 0; a < piezas.getNumeroReyes(); a++) {
 		if (piezas.getRey(a).getColor() == color) {
 			for (int b = 1; b < 9; b++) {
 				for (int c = 1; c < 9; c++) {
 					if (piezas.comprobar_movimiento(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, turno, piezas) == true) {
+						puntuacion_jugada_1 = puntuacion(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, turno, piezas, "Rey", color);
 						ListaPiezas piezas2 = (piezas);
-						puntuacion_jugada_1 = puntuacion(b, c, piezas2, "Rey", color);
 						piezas2.ejecuta_movimientocopia(piezas2.getRey(a).getX(), piezas2.getRey(a).getY(), b, c, turno);
 						for (int d = 0; d < piezas2.getNumeroReyes(); d++) {
-							if (piezas2.getRey(d).getColor() == color_contrario) {
+							if (piezas2.getRey(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Rey", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas, "Rey", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -221,11 +229,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroReinas(); d++) {
-							if (piezas2.getReina(d).getColor() == color_contrario) {
+							if (piezas2.getReina(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Reina", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas, "Reina", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -234,11 +242,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroTorres(); d++) {
-							if (piezas2.getTorre(d).getColor() == color_contrario) {
+							if (piezas2.getTorre(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Torre", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas, "Torre", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -247,11 +255,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroCaballos(); d++) {
-							if (piezas2.getCaballo(d).getColor() == color_contrario) {
+							if (piezas2.getCaballo(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Caballo", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas, "Caballo", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -260,11 +268,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroAlfiles(); d++) {
-							if (piezas2.getAlfil(d).getColor() == color_contrario) {
+							if (piezas2.getAlfil(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Alfil", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas, "Alfil", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -273,11 +281,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroPeones(); d++) {
-							if (piezas2.getPeon(d).getColor() == color_contrario) {
+							if (piezas2.getPeon(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Peon", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas, "Peon", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getRey(a).getX(), piezas.getRey(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -290,20 +298,21 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 			}
 		}
 	}
+
 	for (int a = 0; a < piezas.getNumeroReinas(); a++) {
 		if (piezas.getReina(a).getColor() == color) {
 			for (int b = 1; b < 9; b++) {
 				for (int c = 1; c < 9; c++) {
 					if (piezas.comprobar_movimiento(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, turno, piezas) == true) {
+						puntuacion_jugada_1 = puntuacion(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, turno, piezas, "Reina", color);
 						ListaPiezas piezas2 = (piezas);
-						puntuacion_jugada_1 = puntuacion(b, c, piezas2, "Reina", color);
-						piezas2.ejecuta_movimientocopia(piezas2.getReina(a).getX(), piezas2.getReina(a).getY(), b, c, turno);
+						piezas2.ejecuta_movimientocopia(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, turno);
 						for (int d = 0; d < piezas2.getNumeroReyes(); d++) {
-							if (piezas2.getRey(d).getColor() == color_contrario) {
+							if (piezas2.getRey(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Rey", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas, "Rey", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -312,11 +321,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroReinas(); d++) {
-							if (piezas2.getReina(d).getColor() == color_contrario) {
+							if (piezas2.getReina(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Reina", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas, "Reina", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -325,11 +334,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroTorres(); d++) {
-							if (piezas2.getTorre(d).getColor() == color_contrario) {
+							if (piezas2.getTorre(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Torre", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas, "Torre", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -338,11 +347,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroCaballos(); d++) {
-							if (piezas2.getCaballo(d).getColor() == color_contrario) {
+							if (piezas2.getCaballo(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Caballo", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas, "Caballo", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -351,11 +360,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroAlfiles(); d++) {
-							if (piezas2.getAlfil(d).getColor() == color_contrario) {
+							if (piezas2.getAlfil(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Alfil", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas, "Alfil", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -364,11 +373,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroPeones(); d++) {
-							if (piezas2.getPeon(d).getColor() == color_contrario) {
+							if (piezas2.getPeon(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Peon", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas, "Peon", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getReina(a).getX(), piezas.getReina(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -381,20 +390,21 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 			}
 		}
 	}
+
 	for (int a = 0; a < piezas.getNumeroTorres(); a++) {
 		if (piezas.getTorre(a).getColor() == color) {
 			for (int b = 1; b < 9; b++) {
 				for (int c = 1; c < 9; c++) {
 					if (piezas.comprobar_movimiento(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, turno, piezas) == true) {
+						puntuacion_jugada_1 = puntuacion(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, turno, piezas, "Torre", color);
 						ListaPiezas piezas2 = (piezas);
-						puntuacion_jugada_1 = puntuacion(b, c, piezas2, "Reina", color);
-						piezas2.ejecuta_movimientocopia(piezas2.getTorre(a).getX(), piezas2.getTorre(a).getY(), b, c, turno);
+						piezas2.ejecuta_movimientocopia(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, turno);
 						for (int d = 0; d < piezas2.getNumeroReyes(); d++) {
-							if (piezas2.getRey(d).getColor() == color_contrario) {
+							if (piezas2.getRey(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Rey", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas, "Rey", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -403,11 +413,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroReinas(); d++) {
-							if (piezas2.getReina(d).getColor() == color_contrario) {
+							if (piezas2.getReina(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Reina", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas, "Reina", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -416,11 +426,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroTorres(); d++) {
-							if (piezas2.getTorre(d).getColor() == color_contrario) {
+							if (piezas2.getTorre(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Torre", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas, "Torre", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -429,11 +439,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroCaballos(); d++) {
-							if (piezas2.getCaballo(d).getColor() == color_contrario) {
+							if (piezas2.getCaballo(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Caballo", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas, "Caballo", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -442,11 +452,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroAlfiles(); d++) {
-							if (piezas2.getAlfil(d).getColor() == color_contrario) {
+							if (piezas2.getAlfil(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Alfil", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas, "Alfil", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -455,11 +465,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroPeones(); d++) {
-							if (piezas2.getPeon(d).getColor() == color_contrario) {
+							if (piezas2.getPeon(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Peon", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas, "Peon", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getTorre(a).getX(), piezas.getTorre(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -472,20 +482,21 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 			}
 		}
 	}
+
 	for (int a = 0; a < piezas.getNumeroCaballos(); a++) {
 		if (piezas.getCaballo(a).getColor() == color) {
 			for (int b = 1; b < 9; b++) {
 				for (int c = 1; c < 9; c++) {
 					if (piezas.comprobar_movimiento(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, turno, piezas) == true) {
+						puntuacion_jugada_1 = puntuacion(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, turno, piezas, "Caballo", color);
 						ListaPiezas piezas2 = (piezas);
-						puntuacion_jugada_1 = puntuacion(b, c, piezas2, "Caballo", color);
-						piezas2.ejecuta_movimientocopia(piezas2.getCaballo(a).getX(), piezas2.getCaballo(a).getY(), b, c, turno);
+						piezas2.ejecuta_movimientocopia(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, turno);
 						for (int d = 0; d < piezas2.getNumeroReyes(); d++) {
-							if (piezas2.getRey(d).getColor() == color_contrario) {
+							if (piezas2.getRey(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Rey", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas, "Rey", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -494,11 +505,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroReinas(); d++) {
-							if (piezas2.getReina(d).getColor() == color_contrario) {
+							if (piezas2.getReina(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Reina", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas, "Reina", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -507,11 +518,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroTorres(); d++) {
-							if (piezas2.getTorre(d).getColor() == color_contrario) {
+							if (piezas2.getTorre(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Torre", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas, "Torre", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -520,11 +531,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroCaballos(); d++) {
-							if (piezas2.getCaballo(d).getColor() == color_contrario) {
+							if (piezas2.getCaballo(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Caballo", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas, "Caballo", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -533,11 +544,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroAlfiles(); d++) {
-							if (piezas2.getAlfil(d).getColor() == color_contrario) {
+							if (piezas2.getAlfil(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Alfil", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas, "Alfil", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -546,11 +557,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroPeones(); d++) {
-							if (piezas2.getPeon(d).getColor() == color_contrario) {
+							if (piezas2.getPeon(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Peon", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas, "Peon", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getCaballo(a).getX(), piezas.getCaballo(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -563,20 +574,21 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 			}
 		}
 	}
+
 	for (int a = 0; a < piezas.getNumeroAlfiles(); a++) {
 		if (piezas.getAlfil(a).getColor() == color) {
 			for (int b = 1; b < 9; b++) {
 				for (int c = 1; c < 9; c++) {
 					if (piezas.comprobar_movimiento(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, turno, piezas) == true) {
+						puntuacion_jugada_1 = puntuacion(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, turno, piezas, "Alfil", color);
 						ListaPiezas piezas2 = (piezas);
-						puntuacion_jugada_1 = puntuacion(b, c, piezas2, "Alfil", color);
-						piezas2.ejecuta_movimientocopia(piezas2.getAlfil(a).getX(), piezas2.getAlfil(a).getY(), b, c, turno);
+						piezas2.ejecuta_movimientocopia(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, turno);
 						for (int d = 0; d < piezas2.getNumeroReyes(); d++) {
-							if (piezas2.getRey(d).getColor() == color_contrario) {
+							if (piezas2.getRey(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Rey", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas, "Rey", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -585,11 +597,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroReinas(); d++) {
-							if (piezas2.getReina(d).getColor() == color_contrario) {
+							if (piezas2.getReina(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Reina", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas, "Reina", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -598,11 +610,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroTorres(); d++) {
-							if (piezas2.getTorre(d).getColor() == color_contrario) {
+							if (piezas2.getTorre(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Torre", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas, "Torre", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -611,11 +623,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroCaballos(); d++) {
-							if (piezas2.getCaballo(d).getColor() == color_contrario) {
+							if (piezas2.getCaballo(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Caballo", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas, "Caballo", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -624,11 +636,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroAlfiles(); d++) {
-							if (piezas2.getAlfil(d).getColor() == color_contrario) {
+							if (piezas2.getAlfil(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Alfil", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas, "Alfil", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -637,11 +649,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroPeones(); d++) {
-							if (piezas2.getPeon(d).getColor() == color_contrario) {
+							if (piezas2.getPeon(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Peon", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas, "Peon", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getAlfil(a).getX(), piezas.getAlfil(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -654,20 +666,21 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 			}
 		}
 	}
+
 	for (int a = 0; a < piezas.getNumeroPeones(); a++) {
 		if (piezas.getPeon(a).getColor() == color) {
 			for (int b = 1; b < 9; b++) {
 				for (int c = 1; c < 9; c++) {
 					if (piezas.comprobar_movimiento(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, turno, piezas) == true) {
+						puntuacion_jugada_1 = puntuacion(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, turno, piezas, "Peon", color);
 						ListaPiezas piezas2 = (piezas);
-						puntuacion_jugada_1 = puntuacion(b, c, piezas2, "Peon", color);
-						piezas2.ejecuta_movimientocopia(piezas2.getPeon(a).getX(), piezas2.getPeon(a).getY(), b, c, turno);
+						piezas2.ejecuta_movimientocopia(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, turno);
 						for (int d = 0; d < piezas2.getNumeroReyes(); d++) {
-							if (piezas2.getRey(d).getColor() == color_contrario) {
+							if (piezas2.getRey(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Rey", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getRey(d).getX(), piezas2.getRey(d).getY(), e, f, turnocontrario, piezas, "Rey", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -676,11 +689,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroReinas(); d++) {
-							if (piezas2.getReina(d).getColor() == color_contrario) {
+							if (piezas2.getReina(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Reina", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getReina(d).getX(), piezas2.getReina(d).getY(), e, f, turnocontrario, piezas, "Reina", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -689,11 +702,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroTorres(); d++) {
-							if (piezas2.getTorre(d).getColor() == color_contrario) {
+							if (piezas2.getTorre(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Torre", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getTorre(d).getX(), piezas2.getTorre(d).getY(), e, f, turnocontrario, piezas, "Torre", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -702,11 +715,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroCaballos(); d++) {
-							if (piezas2.getCaballo(d).getColor() == color_contrario) {
+							if (piezas2.getCaballo(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Caballo", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getCaballo(d).getX(), piezas2.getCaballo(d).getY(), e, f, turnocontrario, piezas, "Caballo", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -715,11 +728,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroAlfiles(); d++) {
-							if (piezas2.getAlfil(d).getColor() == color_contrario) {
+							if (piezas2.getAlfil(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Alfil", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getAlfil(d).getX(), piezas2.getAlfil(d).getY(), e, f, turnocontrario, piezas, "Alfil", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}
@@ -728,11 +741,11 @@ Jugada IA::analisis_jugada(int turno, ListaPiezas piezas) {
 							}
 						}
 						for (int d = 0; d < piezas2.getNumeroPeones(); d++) {
-							if (piezas2.getPeon(d).getColor() == color_contrario) {
+							if (piezas2.getPeon(d).getColor() == colorcontrario) {
 								for (int e = 1; e < 9; e++) {
 									for (int f = 1; f < 9; f++) {
-										if (piezas2.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turno_contrario, piezas2) == true) {
-											puntuacion_jugada_2 = puntuacion(e, f, piezas2, "Peon", color_contrario);
+										if (piezas.comprobar_movimiento(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas2) == true) {
+											puntuacion_jugada_2 = puntuacion(piezas2.getPeon(d).getX(), piezas2.getPeon(d).getY(), e, f, turnocontrario, piezas, "Peon", colorcontrario);
 											puntuacion_total = puntuacion_jugada_1 - puntuacion_jugada_2;
 											mejor_jugada = comparacion(piezas.getPeon(a).getX(), piezas.getPeon(a).getY(), b, c, puntuacion_total, mejor_jugada);
 										}

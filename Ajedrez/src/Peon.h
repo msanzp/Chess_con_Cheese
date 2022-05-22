@@ -3,10 +3,10 @@
 
 class Peon : public Pieza {
 private:
-	bool primermovimiento = true; // Cuando no se ha movido el peon este valor es true
+	bool primermovimiento; // Cuando no se ha movido el peon este valor es true
 	int jugada_primer_movimiento = 0; // esta variable sirve para comer al paso
 public:
-	Peon(int x, int y, char c);
+	Peon(int x, int y, char c, bool primer_movimiento);
 
 	// funciones get y set
 	void setJugadaPrimerMovimiento(int t) { jugada_primer_movimiento = t; }

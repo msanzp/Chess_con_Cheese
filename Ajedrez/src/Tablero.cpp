@@ -57,8 +57,8 @@ void Tablero::comienzo_partida()
 
 	//creamos los peones
 	for (int i = 1; i < 9; i++) {
-		Peon* aux1 = new Peon(i, 2, 'w');
-		Peon* aux2 = new Peon(i, 7, 'b');
+		Peon* aux1 = new Peon(i, 2, 'w', true);
+		Peon* aux2 = new Peon(i, 7, 'b', true);
 		piezas.agregar(aux1);
 		piezas.agregar(aux2);
 	}
@@ -139,11 +139,9 @@ void Tablero::juego_local(int opcion_juego, int opcion_color, int *turno, int op
 }
 
 void Tablero::juego_maquina(int* turno, int* final_partida) {
-	int turnocontrario = 0;
-	if (turno == 0)
-		turnocontrario = 1;
 
 	if (piezas.comprobar_jaquemate(*turno, piezas) == false && piezas.comprobar_ahogado(*turno, piezas) == false) {
+		*final_partida = 0;
 		Jugada jugada = IA::analisis_jugada(*turno, piezas);
 		piezas.ejecuta_movimiento(jugada.origen_x, jugada.origen_y, jugada.destino_x, jugada.destino_y, *turno);
 		if (*turno == 0)
@@ -157,7 +155,6 @@ void Tablero::juego_maquina(int* turno, int* final_partida) {
 		if (piezas.comprobar_ahogado(*turno, piezas) == true)
 			*final_partida = 2;
 	}
-	*final_partida = 0;
 }
 
 void Tablero::dibuja2D(int opcion_juego, int opcion_color, int turno, int final_partida)

@@ -62,7 +62,7 @@ ListaPiezas::ListaPiezas(const ListaPiezas& copia) {
 		agregar(alfil);
 	}
 	for (int i = 0; i < copia.numeropeones; i++) {
-		Peon* peon = new Peon(copia.peones[i]->getX(), copia.peones[i]->getY(), copia.peones[i]->getColor());
+		Peon* peon = new Peon(copia.peones[i]->getX(), copia.peones[i]->getY(), copia.peones[i]->getColor(), copia.peones[i]->getPrimerMovimiento());
 		agregar(peon);
 	}
 }
@@ -239,9 +239,11 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 
 	// debido a ser una de las jugadas más raras, vamos a analizar primero el enroque
 	for (int i = 0; i < numeroreyes; i++) {
-		for (int j = 0; j < numerotorres; j++) {
-			if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j])==true)
-				return true;
+		if (reyes[i]->getX() == origen_x && reyes[i]->getY() == origen_y) {
+			for (int j = 0; j < numerotorres; j++) {
+				if (comprobar_enroque(origen_x, origen_y, destino_x, destino_y, turno, reyes[i], torres[j]) == true)
+					return true;
+			}
 		}
 	}
 
@@ -252,9 +254,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 				// si la forma de moverse es la adecuada, comprobamos que no hay piezas de su mismo color en la casilla de destino
 				if (comprobar_posicion(destino_x, destino_y, turno) == true)
 					return false;
-				// compruebo que en la posicion de destino no se encuentra en jaque
-				if (comprobar_jaque(destino_x, destino_y, turno) == true)
-					return false;
+				else {
+					ListaPiezas piezas2 = (L);
+					piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+						if (piezas2.getRey(j).getColor() == color) {
+							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								return false;
+							}
+						}
+					}
+				}
 			}
 			else
 				return false;
@@ -369,23 +379,19 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 			if (turno == 0)
 				turno1 = 1;
 
-			// lo primero que vamos a comprobar en el peon es que no coma hacia adelante
-			if (origen_x == destino_x && comprobar_posicion(destino_x, destino_y) == true)
-				return false;
-
 			// si se mueve hacia adelante
 			if (origen_x == destino_x) {
 				if (peones[i]->comprobar_movimiento(destino_x, destino_y) == true) {
-					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno1) == true)
+					if (comprobar_posicion(destino_x, destino_y) == true)
 						return false;
-					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
-						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
-						for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
-							if (piezas2.getRey(j).getColor() == color) {
-								if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
-									return false;
-								}
+					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == true)
+						return false;
+					ListaPiezas piezas2 = (L);
+					piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+						if (piezas2.getRey(j).getColor() == color) {
+							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								return false;
 							}
 						}
 					}
@@ -394,18 +400,17 @@ bool ListaPiezas::comprobar_movimiento(int origen_x, int origen_y, int destino_x
 					return false;
 				return true;
 			}
+
 			// si se mueve de lado para comer
 			else if (fabs(origen_x - destino_x) == 1) {
 				// en primer lugar ejecutamos el movimiento normal de comer en diagonal
 				if (variaciony == 1 && comprobar_posicion(destino_x, destino_y, turno1) == true) {
-					if (comprobar_trayectoria(origen_x, origen_y, destino_x, destino_y, turno) == false) {
-						ListaPiezas piezas2 = (L);
-						piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
-						for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
-							if (piezas2.getRey(j).getColor() == color) {
-								if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
-									return false;
-								}
+					ListaPiezas piezas2 = (L);
+					piezas2.ejecuta_movimientocopia(origen_x, origen_y, destino_x, destino_y, turno);
+					for (int j = 0; j < piezas2.getNumeroReyes(); j++) { // este bucle sirve para identificar cual es el rey del jugador que le toca jugar
+						if (piezas2.getRey(j).getColor() == color) {
+							if (piezas2.comprobar_jaque(piezas2.getRey(j).getX(), piezas2.getRey(j).getY(), turno) == true) {
+								return false;
 							}
 						}
 					}
@@ -633,8 +638,9 @@ void ListaPiezas::ejecuta_movimiento(int origen_x, int origen_y, int destino_x, 
 			ETSIDI::play("sonidos/mover.wav");
 			peones[i]->setX(destino_x);
 			peones[i]->setY(destino_y);
-			if(peones[i]->getPrimerMovimiento() == true && fabs(destino_y - origen_y) == 2)
+			if (peones[i]->getPrimerMovimiento() == true && fabs(destino_y - origen_y) == 2) {
 				peones[i]->setJugadaPrimerMovimiento(numero_jugadas);
+			}	
 			peones[i]->setPrimerMovimiento();
 			// usa vez he cambiado la posicion del peón, compruebo si puede coronar
 			if ((peones[i]->getY() == 8 && peones[i]->getColor() == 'w') || (peones[i]->getY() == 1 && peones[i]->getColor() == 'b'))
@@ -790,8 +796,9 @@ void ListaPiezas::ejecuta_movimientocopia(int origen_x, int origen_y, int destin
 		if (peones[i]->getX() == origen_x && peones[i]->getY() == origen_y) {
 			peones[i]->setX(destino_x);
 			peones[i]->setY(destino_y);
-			if (peones[i]->getPrimerMovimiento() == true && fabs(destino_y - origen_y) == 2)
+			if (peones[i]->getPrimerMovimiento() == true && fabs(destino_y - origen_y) == 2) {
 				peones[i]->setJugadaPrimerMovimiento(numero_jugadas);
+			}
 			peones[i]->setPrimerMovimiento();
 		}
 

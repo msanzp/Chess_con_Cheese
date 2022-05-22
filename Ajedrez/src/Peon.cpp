@@ -2,10 +2,11 @@
 #include "Peon.h"
 #include <math.h>
 
-Peon::Peon(int x, int y, char c) {
+Peon::Peon(int x, int y, char c, bool primer_movimiento) {
 	color = c;
 	posX = x;
 	posY = y;
+	primermovimiento = primer_movimiento;
 }
 
 bool Peon::comprobar_movimiento(int x, int y) {
